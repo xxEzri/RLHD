@@ -262,7 +262,8 @@ public enum Material
 	BLOOD_FLAT(999),
 	ICE(7997),
 	ICE_FLAT(997),
-	;
+	TURQUOISE_WATER(7002),
+    ;
 
 	private final int diffuseMapId;
 	private final float specularStrength;

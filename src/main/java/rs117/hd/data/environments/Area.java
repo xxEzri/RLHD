@@ -182,6 +182,9 @@ public enum Area
 	// Seers
 	SEERS_BANK(2719, 3497, 2730, 3487),
 
+	// Spirits of the Elid
+	SPIRITS_OF_THE_ELID(3320, 9520, 3391, 9604),
+
 	// White Wolf Mountain
 	WHITE_WOLF_MOUNTAIN(
 		new Rect(2789, 3530, 2879, 3488),

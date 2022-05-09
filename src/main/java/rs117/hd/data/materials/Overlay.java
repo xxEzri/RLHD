@@ -34,6 +34,8 @@ import net.runelite.api.coords.LocalPoint;
 import net.runelite.api.coords.WorldPoint;
 import rs117.hd.data.environments.Area;
 import rs117.hd.data.WaterType;
+import static rs117.hd.utils.HDUtils.rgb;
+import static rs117.hd.utils.HDUtils.rgbToJagexHsl;
 
 @Getter
 public enum Overlay
@@ -243,6 +245,7 @@ public enum Overlay
 
 	// default overlays
 	OVERLAY_N128(-128, WaterType.WATER),
+	OVERLAY_N126(-126, WaterType.TURQUOISE_WATER),
 	OVERLAY_N124(-124, GroundMaterial.DIRT),
 	OVERLAY_N122(-122, GroundMaterial.TILES_2x2_2_GLOSS),
 	OVERLAY_N119(-119, GroundMaterial.FALADOR_PATHS),

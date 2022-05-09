@@ -89,7 +89,8 @@ public enum GroundMaterial
 	BLOOD_FLAT(Material.BLOOD_FLAT),
 	ICE(Material.ICE),
 	ICE_FLAT(Material.ICE_FLAT),
-	;
+	TURQUOISE_WATER(Material.TURQUOISE_WATER),
+    ;
 
 	private final Material[] materials;
 

@@ -88,10 +88,6 @@ public class EnvironmentManager
 	public float[] currentFogColor = new float[]{0,0,0};
 	private float[] targetFogColor = new float[]{0,0,0};
 
-	private float[] startWaterColor = new float[]{0,0,0};
-	public float[] currentWaterColor = new float[]{0,0,0};
-	private float[] targetWaterColor = new float[]{0,0,0};
-
 	private int startFogDepth = 0;
 	public int currentFogDepth = 0;
 	private int targetFogDepth = 0;
@@ -191,7 +187,6 @@ public class EnvironmentManager
 		if (currentTime >= transitionCompleteTime)
 		{
 			currentFogColor = targetFogColor;
-			currentWaterColor = targetWaterColor;
 			currentFogDepth = targetFogDepth;
 			currentAmbientStrength = targetAmbientStrength;
 			currentAmbientColor = targetAmbientColor;
@@ -213,7 +208,6 @@ public class EnvironmentManager
 			float t = (float)(currentTime - startTime) / (float)transitionDuration;
 
 			currentFogColor = HDUtils.lerpVectors(startFogColor, targetFogColor, t);
-			currentWaterColor = HDUtils.lerpVectors(startWaterColor, targetWaterColor, t);
 			currentFogDepth = (int) HDUtils.lerp(startFogDepth, targetFogDepth, t);
 			currentAmbientStrength = HDUtils.lerp(startAmbientStrength, targetAmbientStrength, t);
 			currentAmbientColor = HDUtils.lerpVectors(startAmbientColor, targetAmbientColor, t);
@@ -259,7 +253,6 @@ public class EnvironmentManager
 
 		// set previous variables to current ones
 		startFogColor = currentFogColor;
-		startWaterColor = currentWaterColor;
 		startFogDepth = currentFogDepth;
 		startAmbientStrength = currentAmbientStrength;
 		startAmbientColor = currentAmbientColor;
@@ -376,17 +369,12 @@ public class EnvironmentManager
 		{
 			DefaultSkyColor sky = config.defaultSkyColor();
 			targetFogColor = sky.getRgb(client);
-			if (sky == DefaultSkyColor.OSRS)
-			{
-				sky = DefaultSkyColor.DEFAULT;
-			}
-			targetWaterColor = sky.getRgb(client);
 		}
 		else
 		{
-			targetFogColor = targetWaterColor = env.getFogColor();
+			targetFogColor = env.getFogColor();
 		}
-	}
+    }
 
 	/**
 	 * Figures out which Areas exist in the current scene and
@@ -487,7 +475,6 @@ public class EnvironmentManager
 		{
 			float t = Floats.constrainToRange(lightningBrightness, 0.0f, 1.0f);
 			currentFogColor = HDUtils.lerpVectors(currentFogColor, lightningColor, t);
-			currentWaterColor = HDUtils.lerpVectors(currentWaterColor, lightningColor, t);
 		}
 		else
 		{

@@ -42,6 +42,7 @@ public enum WaterType
 	BLOOD(7, GroundMaterial.BLOOD_FLAT),
 	ICE(8, GroundMaterial.ICE),
 	ICE_FLAT(9, GroundMaterial.ICE_FLAT),
+	TURQUOISE_WATER(10, GroundMaterial.TURQUOISE_WATER)
 	;
 
 	private final int value;

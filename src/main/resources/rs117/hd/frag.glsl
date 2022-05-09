@@ -77,9 +77,6 @@ uniform float animationCurrent;
 uniform int colorBlindMode;
 uniform vec4 fogColor;
 uniform int fogDepth;
-uniform vec3 waterColorLight;
-uniform vec3 waterColorMid;
-uniform vec3 waterColorDark;
 uniform vec3 ambientColor;
 uniform float ambientStrength;
 uniform vec3 lightColor;
@@ -135,6 +132,7 @@ out vec4 FragColor;
 #define POISON_WASTE 5
 #define BLOOD 7
 #define ICE 8
+#define TURQUOISE_WATER 10
 
 void main() {
     vec3 camPos = vec3(cameraX, cameraY, cameraZ);
@@ -172,7 +170,7 @@ void main() {
     float waterNormalStrength = 0.0;
     float waterBaseOpacity = 1.0;
     float waterFresnelAmount = 0.0;
-    vec3 waterSurfaceColor = vec3(1, 0, 0);
+    vec3 waterColor = vec3(1, 0, 0);
     vec3 waterFoamColor = vec3(0, 0, 0);
     int waterHasFoam = 1;
     float waterDuration = 1;
@@ -180,44 +178,52 @@ void main() {
     int waterNormalMap2 = 236;
 
     if (
-   diffuseMapId1 == 1 || diffuseMapId1 == 24 || diffuseMapId1 == 7001 || diffuseMapId1 == 7024 ||
-   diffuseMapId2 == 1 || diffuseMapId2 == 24 || diffuseMapId2 == 7001 || diffuseMapId2 == 7024 ||
-   diffuseMapId3 == 1 || diffuseMapId3 == 24 || diffuseMapId3 == 7001 || diffuseMapId3 == 7024)
+        diffuseMapId1 == 1 || diffuseMapId1 == 24 || diffuseMapId1 == 7001 || diffuseMapId1 == 7024 ||
+        diffuseMapId2 == 1 || diffuseMapId2 == 24 || diffuseMapId2 == 7001 || diffuseMapId2 == 7024 ||
+        diffuseMapId3 == 1 || diffuseMapId3 == 24 || diffuseMapId3 == 7001 || diffuseMapId3 == 7024)
     {
         isWater = true;
         waterType = WATER;
     }
     else if (
-    diffuseMapId1 == 25 || diffuseMapId1 == 7025 ||
-    diffuseMapId2 == 25 || diffuseMapId2 == 7025 ||
-    diffuseMapId3 == 25 || diffuseMapId3 == 7025)
+        diffuseMapId1 == 25 || diffuseMapId1 == 7025 ||
+        diffuseMapId2 == 25 || diffuseMapId2 == 7025 ||
+        diffuseMapId3 == 25 || diffuseMapId3 == 7025)
     {
         isWater = true;
         waterType = SWAMP_WATER;
     }
     else if (
-    diffuseMapId1 == 998 || diffuseMapId1 == 7998 ||
-    diffuseMapId2 == 998 || diffuseMapId2 == 7998 ||
-    diffuseMapId3 == 998 || diffuseMapId3 == 7998)
+        diffuseMapId1 == 998 || diffuseMapId1 == 7998 ||
+        diffuseMapId2 == 998 || diffuseMapId2 == 7998 ||
+        diffuseMapId3 == 998 || diffuseMapId3 == 7998)
     {
         isWater = true;
         waterType = POISON_WASTE;
     }
     else if (
-    diffuseMapId1 == 999 || diffuseMapId1 == 7999 ||
-    diffuseMapId2 == 999 || diffuseMapId2 == 7999 ||
-    diffuseMapId3 == 999 || diffuseMapId3 == 7999)
+        diffuseMapId1 == 999 || diffuseMapId1 == 7999 ||
+        diffuseMapId2 == 999 || diffuseMapId2 == 7999 ||
+        diffuseMapId3 == 999 || diffuseMapId3 == 7999)
     {
         isWater = true;
         waterType = BLOOD;
     }
     else if (
-    diffuseMapId1 == 997 || diffuseMapId1 == 7997 ||
-    diffuseMapId2 == 997 || diffuseMapId2 == 7997 ||
-    diffuseMapId3 == 997 || diffuseMapId3 == 7997)
+        diffuseMapId1 == 997 || diffuseMapId1 == 7997 ||
+        diffuseMapId2 == 997 || diffuseMapId2 == 7997 ||
+        diffuseMapId3 == 997 || diffuseMapId3 == 7997)
     {
         isWater = true;
         waterType = ICE;
+    }
+    else if (
+        diffuseMapId1 == 7002 ||
+        diffuseMapId2 == 7002 ||
+        diffuseMapId3 == 7002)
+    {
+        isWater = true;
+        waterType = TURQUOISE_WATER;
     }
 
     if (isWater)
@@ -230,39 +236,40 @@ void main() {
         switch (waterType)
         {
             case WATER:
-            waterSpecularStrength = 0.5;
-            waterSpecularGloss = 500;
-            waterNormalStrength = 0.09;
-            waterBaseOpacity = 0.5;
-            waterFresnelAmount = 1.0;
-            waterSurfaceColor = vec3(1, 1, 1);
-            waterFoamColor = vec3(176, 164, 146);
-            waterHasFoam = 1;
-            waterDuration = 1;
-            waterNormalMap1 = 236;
-            waterNormalMap2 = 236;
-            break;
+                waterSpecularStrength = 0.5;
+                waterSpecularGloss = 500;
+                waterNormalStrength = 0.09;
+                waterBaseOpacity = 0.5;
+                waterFresnelAmount = 1.0;
+//                waterColor = vec3(0, 117, 142) / 255.0;
+                waterColor = vec3(94, 114, 164) / 255.0;
+                waterFoamColor = vec3(176, 164, 146) / 255.0;
+                waterHasFoam = 1;
+                waterDuration = 1;
+                waterNormalMap1 = 236;
+                waterNormalMap2 = 236;
+                break;
             case SWAMP_WATER:
-            waterSpecularStrength = 0.1;
-            waterSpecularGloss = 100;
-            waterNormalStrength = 0.05;
-            waterBaseOpacity = 0.8;
-            waterFresnelAmount = 0.3;
-            waterSurfaceColor = vec3(23, 33, 20) / 255.0;
-            waterFoamColor = vec3(115, 120, 101);
-            waterHasFoam = 1;
-            waterDuration = 1.2;
-            waterNormalMap1 = 236;
-            waterNormalMap2 = 236;
-            break;
+                waterSpecularStrength = 0.1;
+                waterSpecularGloss = 100;
+                waterNormalStrength = 0.05;
+                waterBaseOpacity = 0.8;
+                waterFresnelAmount = 0.3;
+                waterColor = vec3(23, 33, 20) / 255.0;
+                waterFoamColor = vec3(115, 120, 101) / 255.0;
+                waterHasFoam = 1;
+                waterDuration = 1.2;
+                waterNormalMap1 = 236;
+                waterNormalMap2 = 236;
+                break;
             case POISON_WASTE:
             waterSpecularStrength = 0.1;
             waterSpecularGloss = 100;
             waterNormalStrength = 0.05;
             waterBaseOpacity = 0.9;
             waterFresnelAmount = 0.3;
-            waterSurfaceColor = vec3(22, 23, 13) / 255.0;
-            waterFoamColor = vec3(106, 108, 100);
+            waterColor = vec3(22, 23, 13) / 255.0;
+            waterFoamColor = vec3(106, 108, 100) / 255.0;
             waterHasFoam = 1;
             waterDuration = 1.6;
             waterNormalMap1 = 236;
@@ -274,8 +281,8 @@ void main() {
             waterNormalStrength = 0.05;
             waterBaseOpacity = 0.8;
             waterFresnelAmount = 0.3;
-            waterSurfaceColor = vec3(38, 0, 0) / 255.0;
-            waterFoamColor = vec3(117, 63, 45);
+            waterColor = vec3(38, 0, 0) / 255.0;
+            waterFoamColor = vec3(117, 63, 45) / 255.0;
             waterHasFoam = 1;
             waterDuration = 2;
             waterNormalMap1 = 236;
@@ -287,12 +294,25 @@ void main() {
             waterNormalStrength = 0.04;
             waterBaseOpacity = 0.85;
             waterFresnelAmount = 1.0;
-            waterSurfaceColor = vec3(1, 1, 1);
-            waterFoamColor = vec3(150, 150, 150);
+            waterColor = vec3(120, 182, 195) / 255.0;
+            waterFoamColor = vec3(150, 150, 150) / 255.0;
             waterHasFoam = 1;
             waterDuration = 0;
             waterNormalMap1 = 246;
             waterNormalMap2 = 246;
+            break;
+            case TURQUOISE_WATER:
+            waterSpecularStrength = 0.5;
+            waterSpecularGloss = 500;
+            waterNormalStrength = 0.09;
+            waterBaseOpacity = 0.5;
+            waterFresnelAmount = 1.0;
+            waterColor = vec3(97, 206, 192) / 255.0;
+            waterFoamColor = vec3(.5);
+            waterHasFoam = 1;
+            waterDuration = 1;
+            waterNormalMap1 = 236;
+            waterNormalMap2 = 236;
             break;
         }
     }
@@ -336,6 +356,11 @@ void main() {
         {
             waterDepthColor = vec3(0, 117, 142) / 255.0;
             waterCausticsStrength = 0.4;
+        }
+        else if (underwaterType == TURQUOISE_WATER)
+        {
+            waterDepthColor = vec3(0, 109, 86) / 255.0;
+            waterCausticsStrength = 1.0;
         }
     }
     if (isUnderwater)
@@ -803,11 +828,11 @@ void main() {
         // add sky gradient
         if (finalFresnel < 0.5)
         {
-            surfaceColor = mix(waterColorDark, waterColorMid, finalFresnel * 2);
+            surfaceColor = mix(waterDepthColor, waterColor, finalFresnel * 2);
         }
         else
         {
-            surfaceColor = mix(waterColorMid, waterColorLight, (finalFresnel - 0.5) * 2);
+            surfaceColor = mix(waterColor, (waterColor + fogColor.rgb) / 1.5, (finalFresnel - 0.5) * 2) * ambientStrength;
         }
     }
     vec3 surfaceColorOut = surfaceColor * max(combinedSpecularStrength, 0.2);
@@ -820,14 +845,14 @@ void main() {
 
     if (isWater)
     {
-        vec3 baseColor = waterSurfaceColor * compositeLight;
+        vec3 baseColor = waterColor * compositeLight;
         baseColor = mix(baseColor, surfaceColor, waterFresnelAmount);
         float shadowDarken = 0.15;
         baseColor *= (1.0 - shadowDarken) + inverseShadow * shadowDarken;
         float maxFoamAmount = 0.8;
         float foamAmount = min(1.0 - fragColor.r, maxFoamAmount);
         float foamDistance = 0.7;
-        vec3 foamColor = waterFoamColor / 255.0;
+        vec3 foamColor = waterFoamColor;
         foamColor = foamColor * diffuse3.rgb * compositeLight;
         foamAmount = clamp(pow(1.0 - ((1.0 - foamAmount) / foamDistance), 3), 0.0, 1.0) * waterHasFoam;
         foamAmount *= foamColor.r;
