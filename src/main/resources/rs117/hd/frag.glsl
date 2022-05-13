@@ -850,8 +850,9 @@ void main() {
         ivec2 screenSize = textureSize(waterReflectionMap, 0);
         vec2 uv = gl_FragCoord.xy / vec2(screenSize);
         uv.y = 1 - uv.y;
+        uv.x += N.x / 10;
         vec3 c = texture(waterReflectionMap, uv).rgb;
-        FragColor = vec4(c, 1); return;
+//        FragColor = vec4(c, 1); return;
 
 //        FragColor = vec4(I, 1); return;
 //        FragColor = vec4(N, 1); return;
@@ -863,7 +864,7 @@ void main() {
         vec3 waterReflection = skyLightColor;
         if (distance(waterReflection, vec3(0)) < .001)
             waterReflection = vec3(185, 214, 255) / 255.;
-        surfaceColor = mix(waterColor, waterReflection, fresnel);
+        surfaceColor = mix(waterColor, c, finalFresnel);
 
     }
     vec3 surfaceColorOut = surfaceColor * max(combinedSpecularStrength, 0.2);
