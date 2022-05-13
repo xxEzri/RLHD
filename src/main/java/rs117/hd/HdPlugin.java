@@ -1215,8 +1215,8 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 		texWaterReflection = glGenTexture(gl);
 		gl.glBindTexture(gl.GL_TEXTURE_2D, texWaterReflection);
 		gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGB8, width, height, 0, gl.GL_RGB, gl.GL_UNSIGNED_BYTE, null);
-		gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST);
-		gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST);
+		gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
+		gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
 		gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_BORDER);
 		gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_BORDER);
 
@@ -1224,7 +1224,7 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 		if (err != 0)
 	 		throw new RuntimeException("gl Error: " + err);
 
-		float[] color = { 1.0f, 1.0f, 1.0f, 1.0f }; // TODO
+		float[] color = { 0, 0, 0, 1 };
 		gl.glTexParameterfv(GL_TEXTURE_2D, gl.GL_TEXTURE_BORDER_COLOR, color, 0);
 
 		// Bind texture
@@ -2151,6 +2151,7 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 			gl.glEnable(gl.GL_MULTISAMPLE);
 			gl.glBindFramebuffer(gl.GL_DRAW_FRAMEBUFFER, fboSceneHandle);
 			gl.glUniform1i(uniRenderPass, 0);
+			gl.glDisable(gl.GL_SAMPLE_SHADING);
 			gl.glDrawArrays(gl.GL_TRIANGLES, 0, targetBufferOffset);
 
 			gl.glDisable(gl.GL_BLEND);
