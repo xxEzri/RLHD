@@ -900,7 +900,7 @@ void main() {
         float foamAmount = min(1.0 - fragColor.r, maxFoamAmount);
         float foamDistance = 0.7;
         vec3 foamColor = waterFoamColor / 255.0;
-        foamColor = foamColor * diffuse3.xyz * compositeLight * 300;
+        foamColor = foamColor * diffuse3.xyz * compositeLight * 200;
         foamAmount = clamp(pow(1.0 - ((1.0 - foamAmount) / foamDistance), 3), 0.0, 1.0) * waterHasFoam;
         foamAmount *= foamColor.r;
         color = mix(color, foamColor, foamAmount);
