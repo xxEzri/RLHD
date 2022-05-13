@@ -174,7 +174,7 @@ public class ModelPusher
             twelveFloats[2] = uv[idx + 1];
             twelveFloats[3] = 0;
             twelveFloats[4] = packedMaterialData;
-            twelveFloats[5] = uv[idx + 2];g
+            twelveFloats[5] = uv[idx + 2];
             twelveFloats[6] = uv[idx + 3];
             twelveFloats[7] = 0;
             twelveFloats[8] = packedMaterialData;

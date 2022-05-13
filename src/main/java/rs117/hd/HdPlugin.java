@@ -231,6 +231,9 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 	private int fboShadowMap = -1;
 	private int texShadowMap = -1;
 
+	private int fboWaterReflection = -1;
+	private int texWaterReflection = -1;
+
 	// scene vertex buffer
 	private final GLBuffer sceneVertexBuffer = new GLBuffer();
 	// scene uv buffer
@@ -344,6 +347,7 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 	private int uniProjectionMatrix;
 	private int uniLightProjectionMatrix;
 	private int uniShadowMap;
+	private int uniWaterReflectionMap;
 	private int uniTex;
 	private int uniTexSamplingMode;
 	private int uniTexSourceDimensions;
@@ -837,6 +841,7 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 		gl.glUniform1i(uniTextures, 1); // texture sampler array is bound to texture1
 		gl.glUniform1i(uniTexturesHD, 2); // HD texture sampler array is bound to texture2
 		gl.glUniform1i(uniShadowMap, 3); // shadow map sampler is bound to texture3
+		gl.glUniform1i(uniWaterReflectionMap, 4); // water reflection map sampler is bound to texture4
 
 		gl.glUseProgram(0);
 
@@ -855,6 +860,7 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 		uniProjectionMatrix = gl.glGetUniformLocation(glProgram, "projectionMatrix");
 		uniLightProjectionMatrix = gl.glGetUniformLocation(glProgram, "lightProjectionMatrix");
 		uniShadowMap = gl.glGetUniformLocation(glProgram, "shadowMap");
+		uniWaterReflectionMap = gl.glGetUniformLocation(glProgram, "waterReflectionMap");
 		uniSaturation = gl.glGetUniformLocation(glProgram, "saturation");
 		uniContrast = gl.glGetUniformLocation(glProgram, "contrast");
 		uniUseFog = gl.glGetUniformLocation(glProgram, "useFog");
@@ -1191,6 +1197,35 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 		// Reset
 		gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, 0);
 		gl.glBindRenderbuffer(gl.GL_RENDERBUFFER, 0);
+
+
+		// Create and bind the FBO
+		fboWaterReflection = glGenFrameBuffer(gl);
+		gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, fboWaterReflection);
+
+		// Create texture
+		texWaterReflection = glGenTexture(gl);
+		gl.glBindTexture(gl.GL_TEXTURE_2D, texWaterReflection);
+		gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGB8, width, height, 0, gl.GL_RGB, gl.GL_UNSIGNED_BYTE, null);
+		gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST);
+		gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST);
+		gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_BORDER);
+		gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_BORDER);
+
+		int err = gl.glGetError();
+		if (err != 0)
+	 		throw new RuntimeException("gl Error: " + err);
+
+		float[] color = { 1.0f, 1.0f, 1.0f, 1.0f }; // TODO
+		gl.glTexParameterfv(GL_TEXTURE_2D, gl.GL_TEXTURE_BORDER_COLOR, color, 0);
+
+		// Bind texture
+		gl.glFramebufferTexture2D(gl.GL_FRAMEBUFFER, gl.GL_COLOR_ATTACHMENT0, gl.GL_TEXTURE_2D, texWaterReflection, 0);
+		gl.glReadBuffer(gl.GL_NONE);
+
+		// Reset
+		gl.glBindTexture(gl.GL_TEXTURE_2D, 0);
+		gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, 0);
 	}
 
 	private void shutdownAAFbo()
@@ -1205,6 +1240,18 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 		{
 			glDeleteRenderbuffers(gl, rboSceneHandle);
 			rboSceneHandle = -1;
+		}
+
+		if (texWaterReflection != -1)
+		{
+			glDeleteTexture(gl, texWaterReflection);
+			texWaterReflection = -1;
+		}
+
+		if (fboWaterReflection != -1)
+		{
+			glDeleteFrameBuffer(gl, fboWaterReflection);
+			fboWaterReflection = -1;
 		}
 	}
 
@@ -2002,15 +2049,6 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 
 			gl.glUniform1i(uniShadowsEnabled, configShadowsEnabled ? 1 : 0);
 
-			// Calculate projection matrix
-			Matrix4 projectionMatrix = new Matrix4();
-			projectionMatrix.scale(client.getScale(), client.getScale(), 1);
-			projectionMatrix.multMatrix(makeProjectionMatrix(viewportWidth, viewportHeight, 50));
-			projectionMatrix.rotate((float) (Math.PI - pitch * Perspective.UNIT), -1, 0, 0);
-			projectionMatrix.rotate((float) (yaw * Perspective.UNIT), 0, 1, 0);
-			projectionMatrix.translate(-client.getCameraX2(), -client.getCameraY2(), -client.getCameraZ2());
-			gl.glUniformMatrix4fv(uniProjectionMatrix, 1, false, projectionMatrix.getMatrix(), 0);
-
 			// Bind directional light projection matrix
 			gl.glUniformMatrix4fv(uniLightProjectionMatrix, 1, false, lightProjectionMatrix.getMatrix(), 0);
 
@@ -2046,6 +2084,39 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 			gl.glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
 			gl.glVertexAttribPointer(2, 4, gl.GL_FLOAT, false, 0, 0);
 
+			// Calculate water reflection projection matrix
+			Matrix4 projectionMatrix = new Matrix4();
+			projectionMatrix.scale(client.getScale(), client.getScale(), 1);
+			projectionMatrix.multMatrix(makeProjectionMatrix(viewportWidth, viewportHeight, 50));
+			projectionMatrix.rotate((float) (Math.PI + pitch * Perspective.UNIT), -1, 0, 0);
+			projectionMatrix.rotate((float) (yaw * Perspective.UNIT), 0, 1, 0);
+			projectionMatrix.translate(-client.getCameraX2(), client.getCameraY2() /* TODO: assumes sea level is zero */, -client.getCameraZ2());
+			gl.glUniformMatrix4fv(uniProjectionMatrix, 1, false, projectionMatrix.getMatrix(), 0);
+
+			// TODO: this assumes AA is always enabled
+			gl.glDisable(gl.GL_MULTISAMPLE);
+			if (fboWaterReflection == -1)
+				throw new RuntimeException("Water reflections will crash atm if AA is not enabled");
+			gl.glBindFramebuffer(gl.GL_DRAW_FRAMEBUFFER, fboWaterReflection);
+			gl.glClear(gl.GL_COLOR_BUFFER_BIT);
+			gl.glDrawArrays(gl.GL_TRIANGLES, 0, targetBufferOffset);
+
+			gl.glActiveTexture(gl.GL_TEXTURE4);
+			gl.glBindTexture(gl.GL_TEXTURE_2D, texWaterReflection);
+			gl.glActiveTexture(gl.GL_TEXTURE0);
+
+			// Calculate main scene projection matrix
+			projectionMatrix.loadIdentity();
+			projectionMatrix.scale(client.getScale(), client.getScale(), 1);
+			projectionMatrix.multMatrix(makeProjectionMatrix(viewportWidth, viewportHeight, 50));
+			projectionMatrix.rotate((float) (Math.PI - pitch * Perspective.UNIT), -1, 0, 0);
+			projectionMatrix.rotate((float) (yaw * Perspective.UNIT), 0, 1, 0);
+			projectionMatrix.translate(-client.getCameraX2(), -client.getCameraY2(), -client.getCameraZ2());
+			gl.glUniformMatrix4fv(uniProjectionMatrix, 1, false, projectionMatrix.getMatrix(), 0);
+
+			// TODO: this assumes AA is always enabled
+			gl.glEnable(gl.GL_MULTISAMPLE);
+			gl.glBindFramebuffer(gl.GL_DRAW_FRAMEBUFFER, fboSceneHandle);
 			gl.glDrawArrays(gl.GL_TRIANGLES, 0, targetBufferOffset);
 
 			gl.glDisable(gl.GL_BLEND);

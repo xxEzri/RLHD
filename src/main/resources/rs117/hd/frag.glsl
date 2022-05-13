@@ -71,6 +71,7 @@ layout(std140) uniform pointLights {
 };
 
 uniform sampler2D shadowMap;
+uniform sampler2D waterReflectionMap;
 
 uniform sampler2DArray texturesHD;
 uniform vec2 textureOffsets[128];
@@ -844,6 +845,13 @@ void main() {
 
         vec3 I = viewDir; // incident
         vec3 N = normals.xyz; // normal
+
+        // TODO: use actual viewport size here
+        ivec2 screenSize = textureSize(waterReflectionMap, 0);
+        vec2 uv = gl_FragCoord.xy / vec2(screenSize);
+        uv.y = 1 - uv.y;
+        vec3 c = texture(waterReflectionMap, uv).rgb;
+        FragColor = vec4(c, 1); return;
 
 //        FragColor = vec4(I, 1); return;
 //        FragColor = vec4(N, 1); return;
