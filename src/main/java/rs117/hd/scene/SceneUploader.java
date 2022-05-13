@@ -26,6 +26,7 @@
 package rs117.hd.scene;
 
 import com.google.common.base.Stopwatch;
+import java.util.Random;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
@@ -73,9 +74,11 @@ class SceneUploader
 	@Inject
 	private ModelPusher modelPusher;
 
-	public int sceneId = (int) (System.currentTimeMillis() / 1000L);
+	public int sceneId = new Random().nextInt();
 	private int offset;
 	private int uvoffset;
+
+	static final float[] NORMAL_UP = new float[]{0, 0, -1};
 
 	public void upload(Scene scene, GpuIntBuffer vertexBuffer, GpuFloatBuffer uvBuffer, GpuFloatBuffer normalBuffer)
 	{
@@ -472,10 +475,10 @@ class SceneUploader
 				swVertexIsOverlay = true;
 			}
 
-			float[] swNormals = new float[]{0,-1,0};
-			float[] seNormals = new float[]{0,-1,0};
-			float[] neNormals = new float[]{0,-1,0};
-			float[] nwNormals = new float[]{0,-1,0};
+			float[] swNormals = NORMAL_UP;
+			float[] seNormals = NORMAL_UP;
+			float[] neNormals = NORMAL_UP;
+			float[] nwNormals = NORMAL_UP;
 
 			// retrieve normals from hashmap
 
@@ -585,10 +588,10 @@ class SceneUploader
 			int nwDepth = proceduralGenerator.vertexUnderwaterDepth.getOrDefault(nwVertexKey, 0);
 			int neDepth = proceduralGenerator.vertexUnderwaterDepth.getOrDefault(neVertexKey, 0);
 
-			float[] swNormals = proceduralGenerator.vertexTerrainNormals.getOrDefault(swVertexKey, new float[]{0,-1,0});
-			float[] seNormals = proceduralGenerator.vertexTerrainNormals.getOrDefault(seVertexKey, new float[]{0,-1,0});
-			float[] nwNormals = proceduralGenerator.vertexTerrainNormals.getOrDefault(nwVertexKey, new float[]{0,-1,0});
-			float[] neNormals = proceduralGenerator.vertexTerrainNormals.getOrDefault(neVertexKey, new float[]{0,-1,0});
+			float[] swNormals = proceduralGenerator.vertexTerrainNormals.getOrDefault(swVertexKey, NORMAL_UP);
+			float[] seNormals = proceduralGenerator.vertexTerrainNormals.getOrDefault(seVertexKey, NORMAL_UP);
+			float[] nwNormals = proceduralGenerator.vertexTerrainNormals.getOrDefault(nwVertexKey, NORMAL_UP);
+			float[] neNormals = proceduralGenerator.vertexTerrainNormals.getOrDefault(neVertexKey, NORMAL_UP);
 
 			Material swMaterial = Material.NONE;
 			Material seMaterial = Material.NONE;
@@ -838,9 +841,9 @@ class SceneUploader
 				vertexCIsOverlay = true;
 			}
 
-			float[] normalsA = new float[]{0,-1,0};
-			float[] normalsB = new float[]{0,-1,0};
-			float[] normalsC = new float[]{0,-1,0};
+			float[] normalsA = NORMAL_UP;
+			float[] normalsB = NORMAL_UP;
+			float[] normalsC = NORMAL_UP;
 
 			// retrieve normals from hashmap
 			if (waterType == WaterType.NONE)
@@ -955,21 +958,21 @@ class SceneUploader
 					materialC = groundMaterial.getRandomMaterial(tileZ, tileVertexX, tileVertexY);
 				}
 
-				float[] normalsA = proceduralGenerator.vertexTerrainNormals.getOrDefault(vertexKeyA, new float[]{0,-1,0});
-				float[] normalsB = proceduralGenerator.vertexTerrainNormals.getOrDefault(vertexKeyB, new float[]{0,-1,0});
-				float[] normalsC = proceduralGenerator.vertexTerrainNormals.getOrDefault(vertexKeyC, new float[]{0,-1,0});
+				float[] normalsA = proceduralGenerator.vertexTerrainNormals.getOrDefault(vertexKeyA, NORMAL_UP);
+				float[] normalsB = proceduralGenerator.vertexTerrainNormals.getOrDefault(vertexKeyB, NORMAL_UP);
+				float[] normalsC = proceduralGenerator.vertexTerrainNormals.getOrDefault(vertexKeyC, NORMAL_UP);
 
 				if (normalsA == null)
 				{
-					normalsA = new float[]{0,-1,0};
+					normalsA = NORMAL_UP;
 				}
 				if (normalsB == null)
 				{
-					normalsB = new float[]{0,-1,0};
+					normalsB = NORMAL_UP;
 				}
 				if (normalsC == null)
 				{
-					normalsC = new float[]{0,-1,0};
+					normalsC = NORMAL_UP;
 				}
 
 				WaterType waterType = proceduralGenerator.faceWaterType(tile, face, sceneTileModel);
