@@ -308,6 +308,7 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 	private int viewportOffsetY;
 
 	// Uniforms
+	private int uniRenderPass;
 	private int uniColorBlindMode;
 	private int uniUiColorBlindMode;
 	private int uniUseFog;
@@ -860,6 +861,7 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 
 	private void initUniforms()
 	{
+		uniRenderPass = gl.glGetUniformLocation(glProgram, "renderPass");
 		uniProjectionMatrix = gl.glGetUniformLocation(glProgram, "projectionMatrix");
 		uniLightProjectionMatrix = gl.glGetUniformLocation(glProgram, "lightProjectionMatrix");
 		uniShadowMap = gl.glGetUniformLocation(glProgram, "shadowMap");
@@ -2129,6 +2131,7 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 				throw new RuntimeException("Water reflections will crash atm if AA is not enabled");
 			gl.glBindFramebuffer(gl.GL_DRAW_FRAMEBUFFER, fboWaterReflection);
 			gl.glClear(gl.GL_COLOR_BUFFER_BIT);
+			gl.glUniform1i(uniRenderPass, 1);
 			gl.glDrawArrays(gl.GL_TRIANGLES, 0, targetBufferOffset);
 
 			gl.glActiveTexture(gl.GL_TEXTURE4);
@@ -2147,6 +2150,7 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 			// TODO: this assumes AA is always enabled
 			gl.glEnable(gl.GL_MULTISAMPLE);
 			gl.glBindFramebuffer(gl.GL_DRAW_FRAMEBUFFER, fboSceneHandle);
+			gl.glUniform1i(uniRenderPass, 0);
 			gl.glDrawArrays(gl.GL_TRIANGLES, 0, targetBufferOffset);
 
 			gl.glDisable(gl.GL_BLEND);
