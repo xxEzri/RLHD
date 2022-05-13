@@ -871,14 +871,19 @@ void main() {
 //        FragColor = vec4(I, 1); return;
 //        FragColor = vec4(N, 1); return;
 
-        fresnel = calculateFresnel(I, N, 1.3);
+//        const float ior = 1.3; // realistic
+        const float ior = 2; // realistic
+        fresnel = calculateFresnel(I, N, ior);
 //        FragColor = vec4(vec3(fresnel), 1); return;
         finalFresnel = clamp(mix(baseOpacity, 1.0, fresnel * 1.2), 0.0, 1.0);
+
+        shadow *= (1 - finalFresnel);
+        inverseShadow = (1 - shadow);
 
         vec3 waterReflection = skyLightColor;
         if (distance(waterReflection, vec3(0)) < .001)
             waterReflection = vec3(185, 214, 255) / 255.;
-        surfaceColor = mix(waterColor, c, finalFresnel);
+        surfaceColor = mix(waterColor, c, fresnel);
     }
     vec3 surfaceColorOut = surfaceColor * max(combinedSpecularStrength, 0.2);
 
