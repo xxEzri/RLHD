@@ -301,6 +301,7 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 	private int lastCanvasHeight;
 	private int lastStretchedCanvasWidth;
 	private int lastStretchedCanvasHeight;
+	private boolean lastPlanarReflectionsEnabled = false;
 	private AntiAliasingMode lastAntiAliasingMode;
 	private int lastAnisotropicFilteringLevel = -1;
 
@@ -1944,6 +1945,34 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 			gl.glActiveTexture(gl.GL_TEXTURE3);
 			gl.glBindTexture(GL_TEXTURE_2D, texShadowMap);
 			gl.glActiveTexture(gl.GL_TEXTURE0);
+
+			final Dimension stretchedDimensions = client.getStretchedDimensions();
+
+			final int stretchedCanvasWidth = client.isStretchedEnabled() ? stretchedDimensions.width : canvasWidth;
+			final int stretchedCanvasHeight = client.isStretchedEnabled() ? stretchedDimensions.height : canvasHeight;
+
+			// Setup planar reflection FBO
+			final boolean planarReflectionsEnabled = config.enablePlanarReflections();
+			if (planarReflectionsEnabled)
+			{
+				// Re-create fbo
+				if (lastStretchedCanvasWidth != stretchedCanvasWidth
+						|| lastStretchedCanvasHeight != stretchedCanvasHeight
+						|| lastPlanarReflectionsEnabled != planarReflectionsEnabled)
+				{
+					shutdownPlanarReflectionsFbo();
+
+					initPlanarReflectionsFbo(stretchedCanvasWidth, stretchedCanvasHeight);
+				}
+			}
+			else
+			{
+				shutdownPlanarReflectionsFbo();
+			}
+
+			lastPlanarReflectionsEnabled =  planarReflectionsEnabled;
+			lastStretchedCanvasWidth = stretchedCanvasWidth;
+			lastStretchedCanvasHeight = stretchedCanvasHeight;
 
 			// Setup anti-aliasing
 			final AntiAliasingMode antiAliasingMode = config.antiAliasingMode();
