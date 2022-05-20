@@ -1216,37 +1216,38 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 			gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
 			gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_BORDER);
 			gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_BORDER);
+
+
+			int err = gl.glGetError();
+			if (err != 0)
+				throw new RuntimeException("gl Error: " + err);
+
+			float[] colorBorder = {0, 0, 0, 1};
+			gl.glTexParameterfv(GL_TEXTURE_2D, gl.GL_TEXTURE_BORDER_COLOR, colorBorder, 0);
+
+			// Bind texture
+			gl.glFramebufferTexture2D(gl.GL_FRAMEBUFFER, gl.GL_COLOR_ATTACHMENT0, gl.GL_TEXTURE_2D, texWaterReflection, 0);
+			gl.glReadBuffer(gl.GL_NONE);
+
+			// Create texture
+			texWaterReflectionDepthMap = glGenTexture(gl);
+			gl.glBindTexture(gl.GL_TEXTURE_2D, texWaterReflectionDepthMap);
+			gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_DEPTH_COMPONENT16, width, height, 0, gl.GL_DEPTH_COMPONENT, gl.GL_UNSIGNED_SHORT, null);
+			gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST);
+			gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST);
+			gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_BORDER);
+			gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_BORDER);
+
+			float[] depthBorder = {1, 1, 1, 1};
+			gl.glTexParameterfv(GL_TEXTURE_2D, gl.GL_TEXTURE_BORDER_COLOR, depthBorder, 0);
+
+			// Bind texture
+			gl.glFramebufferTexture2D(gl.GL_FRAMEBUFFER, gl.GL_DEPTH_ATTACHMENT, gl.GL_TEXTURE_2D, texWaterReflectionDepthMap, 0);
+
+			// Reset
+			gl.glBindTexture(gl.GL_TEXTURE_2D, 0);
+			gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, 0);
 		}
-
-		int err = gl.glGetError();
-		if (err != 0)
-	 		throw new RuntimeException("gl Error: " + err);
-
-		float[] colorBorder = { 0, 0, 0, 1 };
-		gl.glTexParameterfv(GL_TEXTURE_2D, gl.GL_TEXTURE_BORDER_COLOR, colorBorder, 0);
-
-		// Bind texture
-		gl.glFramebufferTexture2D(gl.GL_FRAMEBUFFER, gl.GL_COLOR_ATTACHMENT0, gl.GL_TEXTURE_2D, texWaterReflection, 0);
-		gl.glReadBuffer(gl.GL_NONE);
-
-		// Create texture
-		texWaterReflectionDepthMap = glGenTexture(gl);
-		gl.glBindTexture(gl.GL_TEXTURE_2D, texWaterReflectionDepthMap);
-		gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_DEPTH_COMPONENT16, width, height, 0, gl.GL_DEPTH_COMPONENT, gl.GL_UNSIGNED_SHORT, null);
-		gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST);
-		gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST);
-		gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_BORDER);
-		gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_BORDER);
-
-		float[] depthBorder = { 1, 1, 1, 1 };
-		gl.glTexParameterfv(GL_TEXTURE_2D, gl.GL_TEXTURE_BORDER_COLOR, depthBorder, 0);
-
-		// Bind texture
-		gl.glFramebufferTexture2D(gl.GL_FRAMEBUFFER, gl.GL_DEPTH_ATTACHMENT, gl.GL_TEXTURE_2D, texWaterReflectionDepthMap, 0);
-
-		// Reset
-		gl.glBindTexture(gl.GL_TEXTURE_2D, 0);
-		gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, 0);
 	}
 
 	private void shutdownAAFbo()
@@ -2143,17 +2144,21 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 				// Reset
 				gl.glDisable(gl.GL_DEPTH_TEST);
 				gl.glEnable(gl.GL_CULL_FACE);
+
+				gl.glActiveTexture(gl.GL_TEXTURE4);
+				gl.glBindTexture(gl.GL_TEXTURE_2D, texWaterReflection);
+				gl.glActiveTexture(gl.GL_TEXTURE0);
+
+				projectionMatrix.loadIdentity();
+
+				// TODO: this assumes AA is always enabled
+				gl.glEnable(gl.GL_MULTISAMPLE);
+				gl.glBindFramebuffer(gl.GL_DRAW_FRAMEBUFFER, fboSceneHandle);
+				gl.glDisable(gl.GL_SAMPLE_SHADING);
 			}
 
-			gl.glActiveTexture(gl.GL_TEXTURE4);
-			gl.glBindTexture(gl.GL_TEXTURE_2D, texWaterReflection);
-			gl.glActiveTexture(gl.GL_TEXTURE0);
 
 			// Calculate main scene projection matrix
-			if(config.enablePlanarReflections())
-			{
-				projectionMatrix.loadIdentity();
-			}
 			projectionMatrix.scale(client.getScale(), client.getScale(), 1);
 			projectionMatrix.multMatrix(makeProjectionMatrix(viewportWidth, viewportHeight, 50));
 			projectionMatrix.rotate((float) (Math.PI - pitch * Perspective.UNIT), -1, 0, 0);
@@ -2162,10 +2167,7 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 			gl.glUniformMatrix4fv(uniProjectionMatrix, 1, false, projectionMatrix.getMatrix(), 0);
 
 			// TODO: this assumes AA is always enabled
-			gl.glEnable(gl.GL_MULTISAMPLE);
-			gl.glBindFramebuffer(gl.GL_DRAW_FRAMEBUFFER, fboSceneHandle);
 			gl.glUniform1i(uniRenderPass, 0);
-			gl.glDisable(gl.GL_SAMPLE_SHADING);
 			gl.glDrawArrays(gl.GL_TRIANGLES, 0, targetBufferOffset);
 
 			gl.glDisable(gl.GL_BLEND);
