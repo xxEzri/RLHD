@@ -1208,19 +1208,21 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 		gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, 0);
 		gl.glBindRenderbuffer(gl.GL_RENDERBUFFER, 0);
 
+		if(config.enablePlanarReflections())
+		{
+			// Create and bind the FBO
+			fboWaterReflection = glGenFrameBuffer(gl);
+			gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, fboWaterReflection);
 
-		// Create and bind the FBO
-		fboWaterReflection = glGenFrameBuffer(gl);
-		gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, fboWaterReflection);
-
-		// Create texture
-		texWaterReflection = glGenTexture(gl);
-		gl.glBindTexture(gl.GL_TEXTURE_2D, texWaterReflection);
-		gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGB8, width, height, 0, gl.GL_RGB, gl.GL_UNSIGNED_BYTE, null);
-		gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
-		gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
-		gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_BORDER);
-		gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_BORDER);
+			// Create texture
+			texWaterReflection = glGenTexture(gl);
+			gl.glBindTexture(gl.GL_TEXTURE_2D, texWaterReflection);
+			gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGB8, width, height, 0, gl.GL_RGB, gl.GL_UNSIGNED_BYTE, null);
+			gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
+			gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
+			gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_BORDER);
+			gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_BORDER);
+		}
 
 		int err = gl.glGetError();
 		if (err != 0)
@@ -2141,40 +2143,47 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 			gl.glBindBuffer(GL_ARRAY_BUFFER, normalBuffer);
 			gl.glVertexAttribPointer(2, 4, gl.GL_FLOAT, false, 0, 0);
 
-			// Calculate water reflection projection matrix
-			int waterHeight = sceneUploader.waterHeight;
+			// Calculate projection matrices
 			Matrix4 projectionMatrix = new Matrix4();
-			projectionMatrix.scale(client.getScale(), client.getScale(), 1);
-			projectionMatrix.multMatrix(makeProjectionMatrix(viewportWidth, viewportHeight, 50));
-			projectionMatrix.rotate((float) (Math.PI + pitch * Perspective.UNIT), -1, 0, 0);
-			projectionMatrix.rotate((float) (yaw * Perspective.UNIT), 0, 1, 0);
-			projectionMatrix.translate(-client.getCameraX2(), -(client.getCameraY2() + (sceneUploader.waterHeight - client.getCameraY2()) *2), -client.getCameraZ2());
-			gl.glUniformMatrix4fv(uniProjectionMatrix, 1, false, projectionMatrix.getMatrix(), 0);
+			if(config.enablePlanarReflections())
+			{
+				// Calculate water reflection projection matrix
+				int waterHeight = sceneUploader.waterHeight;
+				projectionMatrix.scale(client.getScale(), client.getScale(), 1);
+				projectionMatrix.multMatrix(makeProjectionMatrix(viewportWidth, viewportHeight, 50));
+				projectionMatrix.rotate((float) (Math.PI + pitch * Perspective.UNIT), -1, 0, 0);
+				projectionMatrix.rotate((float) (yaw * Perspective.UNIT), 0, 1, 0);
+				projectionMatrix.translate(-client.getCameraX2(), -(client.getCameraY2() + (waterHeight - client.getCameraY2()) * 2), -client.getCameraZ2());
+				gl.glUniformMatrix4fv(uniProjectionMatrix, 1, false, projectionMatrix.getMatrix(), 0);
 
 
-			// TODO: this assumes AA is always enabled
-			gl.glDisable(gl.GL_MULTISAMPLE);
-			if (fboWaterReflection == -1)
-				throw new RuntimeException("Water reflections will crash atm if AA is not enabled");
-			gl.glBindFramebuffer(gl.GL_DRAW_FRAMEBUFFER, fboWaterReflection);
-			gl.glClearDepth(1);
-			gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT);
-			gl.glDisable(gl.GL_CULL_FACE);
-			gl.glEnable(gl.GL_DEPTH_TEST);
-			gl.glDepthFunc(gl.GL_LESS);
-			gl.glUniform1i(uniRenderPass, 1);
-			gl.glDrawArrays(gl.GL_TRIANGLES, 0, targetBufferOffset);
+				// TODO: this assumes AA is always enabled
+				gl.glDisable(gl.GL_MULTISAMPLE);
+				if (fboWaterReflection == -1)
+					throw new RuntimeException("Water reflections will crash atm if AA is not enabled");
+				gl.glBindFramebuffer(gl.GL_DRAW_FRAMEBUFFER, fboWaterReflection);
+				gl.glClearDepth(1);
+				gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT);
+				gl.glDisable(gl.GL_CULL_FACE);
+				gl.glEnable(gl.GL_DEPTH_TEST);
+				gl.glDepthFunc(gl.GL_LESS);
+				gl.glUniform1i(uniRenderPass, 1);
+				gl.glDrawArrays(gl.GL_TRIANGLES, 0, targetBufferOffset);
 
-			// Reset
-			gl.glDisable(gl.GL_DEPTH_TEST);
-			gl.glEnable(gl.GL_CULL_FACE);
+				// Reset
+				gl.glDisable(gl.GL_DEPTH_TEST);
+				gl.glEnable(gl.GL_CULL_FACE);
+			}
 
 			gl.glActiveTexture(gl.GL_TEXTURE4);
 			gl.glBindTexture(gl.GL_TEXTURE_2D, texWaterReflection);
 			gl.glActiveTexture(gl.GL_TEXTURE0);
 
 			// Calculate main scene projection matrix
-			projectionMatrix.loadIdentity();
+			if(config.enablePlanarReflections())
+			{
+				projectionMatrix.loadIdentity();
+			}
 			projectionMatrix.scale(client.getScale(), client.getScale(), 1);
 			projectionMatrix.multMatrix(makeProjectionMatrix(viewportWidth, viewportHeight, 50));
 			projectionMatrix.rotate((float) (Math.PI - pitch * Perspective.UNIT), -1, 0, 0);
