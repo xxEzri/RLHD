@@ -2171,7 +2171,7 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 
 			// Calculate projection matrices
 			Matrix4 projectionMatrix = new Matrix4();
-			if(config.enablePlanarReflections())
+			if(planarReflectionsEnabled)
 			{
 				// Calculate water reflection projection matrix
 				int waterHeight = sceneUploader.waterHeight;
