@@ -703,6 +703,7 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 					shutdownProgram();
 					shutdownVao();
 					shutdownAAFbo();
+					shutdownPlanarReflectionsFbo();
 					shutdownShadowMapFbo();
 				}
 
@@ -1208,53 +1209,6 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 		// Reset
 		gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, 0);
 		gl.glBindRenderbuffer(gl.GL_RENDERBUFFER, 0);
-
-		if(config.enablePlanarReflections())
-		{
-			// Create and bind the FBO
-			fboWaterReflection = glGenFrameBuffer(gl);
-			gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, fboWaterReflection);
-
-			// Create texture
-			texWaterReflection = glGenTexture(gl);
-			gl.glBindTexture(gl.GL_TEXTURE_2D, texWaterReflection);
-			gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGB8, width, height, 0, gl.GL_RGB, gl.GL_UNSIGNED_BYTE, null);
-			gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
-			gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
-			gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_BORDER);
-			gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_BORDER);
-
-
-			int err = gl.glGetError();
-			if (err != 0)
-				throw new RuntimeException("gl Error: " + err);
-
-			float[] colorBorder = {0, 0, 0, 1};
-			gl.glTexParameterfv(GL_TEXTURE_2D, gl.GL_TEXTURE_BORDER_COLOR, colorBorder, 0);
-
-			// Bind texture
-			gl.glFramebufferTexture2D(gl.GL_FRAMEBUFFER, gl.GL_COLOR_ATTACHMENT0, gl.GL_TEXTURE_2D, texWaterReflection, 0);
-			gl.glReadBuffer(gl.GL_NONE);
-
-			// Create texture
-			texWaterReflectionDepthMap = glGenTexture(gl);
-			gl.glBindTexture(gl.GL_TEXTURE_2D, texWaterReflectionDepthMap);
-			gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_DEPTH_COMPONENT16, width, height, 0, gl.GL_DEPTH_COMPONENT, gl.GL_UNSIGNED_SHORT, null);
-			gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST);
-			gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST);
-			gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_BORDER);
-			gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_BORDER);
-
-			float[] depthBorder = {1, 1, 1, 1};
-			gl.glTexParameterfv(GL_TEXTURE_2D, gl.GL_TEXTURE_BORDER_COLOR, depthBorder, 0);
-
-			// Bind texture
-			gl.glFramebufferTexture2D(gl.GL_FRAMEBUFFER, gl.GL_DEPTH_ATTACHMENT, gl.GL_TEXTURE_2D, texWaterReflectionDepthMap, 0);
-
-			// Reset
-			gl.glBindTexture(gl.GL_TEXTURE_2D, 0);
-			gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, 0);
-		}
 	}
 
 	private void shutdownAAFbo()
@@ -1270,7 +1224,56 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 			glDeleteRenderbuffers(gl, rboSceneHandle);
 			rboSceneHandle = -1;
 		}
+	}
 
+	private void initPlanarReflectionsFbo(int width, int height)
+	{
+		// Create and bind the FBO
+		fboWaterReflection = glGenFrameBuffer(gl);
+		gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, fboWaterReflection);
+
+		// Create texture
+		texWaterReflection = glGenTexture(gl);
+		gl.glBindTexture(gl.GL_TEXTURE_2D, texWaterReflection);
+		gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGB8, width, height, 0, gl.GL_RGB, gl.GL_UNSIGNED_BYTE, null);
+		gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR);
+		gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR);
+		gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_BORDER);
+		gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_BORDER);
+
+
+		int err = gl.glGetError();
+		if (err != 0)
+			throw new RuntimeException("gl Error: " + err);
+
+		float[] colorBorder = {0, 0, 0, 1};
+		gl.glTexParameterfv(GL_TEXTURE_2D, gl.GL_TEXTURE_BORDER_COLOR, colorBorder, 0);
+
+		// Bind texture
+		gl.glFramebufferTexture2D(gl.GL_FRAMEBUFFER, gl.GL_COLOR_ATTACHMENT0, gl.GL_TEXTURE_2D, texWaterReflection, 0);
+		gl.glReadBuffer(gl.GL_NONE);
+
+		// Create texture
+		texWaterReflectionDepthMap = glGenTexture(gl);
+		gl.glBindTexture(gl.GL_TEXTURE_2D, texWaterReflectionDepthMap);
+		gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_DEPTH_COMPONENT16, width, height, 0, gl.GL_DEPTH_COMPONENT, gl.GL_UNSIGNED_SHORT, null);
+		gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST);
+		gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST);
+		gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_BORDER);
+		gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_BORDER);
+
+		float[] depthBorder = {1, 1, 1, 1};
+		gl.glTexParameterfv(GL_TEXTURE_2D, gl.GL_TEXTURE_BORDER_COLOR, depthBorder, 0);
+
+		// Bind texture
+		gl.glFramebufferTexture2D(gl.GL_FRAMEBUFFER, gl.GL_DEPTH_ATTACHMENT, gl.GL_TEXTURE_2D, texWaterReflectionDepthMap, 0);
+
+		// Reset
+		gl.glBindTexture(gl.GL_TEXTURE_2D, 0);
+		gl.glBindFramebuffer(gl.GL_FRAMEBUFFER, 0);
+	}
+
+	private void shutdownPlanarReflectionsFbo() {
 		if (texWaterReflection != -1)
 		{
 			glDeleteTexture(gl, texWaterReflection);
@@ -1957,29 +1960,6 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 			final int stretchedCanvasWidth = client.isStretchedEnabled() ? stretchedDimensions.width : canvasWidth;
 			final int stretchedCanvasHeight = client.isStretchedEnabled() ? stretchedDimensions.height : canvasHeight;
 
-			// Setup planar reflection FBO
-			final boolean planarReflectionsEnabled = config.enablePlanarReflections();
-			if (planarReflectionsEnabled)
-			{
-				// Re-create fbo
-				if (lastStretchedCanvasWidth != stretchedCanvasWidth
-						|| lastStretchedCanvasHeight != stretchedCanvasHeight
-						|| lastPlanarReflectionsEnabled != planarReflectionsEnabled)
-				{
-					shutdownPlanarReflectionsFbo();
-
-					initPlanarReflectionsFbo(stretchedCanvasWidth, stretchedCanvasHeight);
-				}
-			}
-			else
-			{
-				shutdownPlanarReflectionsFbo();
-			}
-
-			lastPlanarReflectionsEnabled =  planarReflectionsEnabled;
-			lastStretchedCanvasWidth = stretchedCanvasWidth;
-			lastStretchedCanvasHeight = stretchedCanvasHeight;
-
 			// Setup anti-aliasing
 			final AntiAliasingMode antiAliasingMode = config.antiAliasingMode();
 			final boolean aaEnabled = antiAliasingMode != AntiAliasingMode.DISABLED;
@@ -1987,15 +1967,10 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 			{
 				gl.glEnable(gl.GL_MULTISAMPLE);
 
-				final Dimension stretchedDimensions = client.getStretchedDimensions();
-
-				final int stretchedCanvasWidth = client.isStretchedEnabled() ? stretchedDimensions.width : canvasWidth;
-				final int stretchedCanvasHeight = client.isStretchedEnabled() ? stretchedDimensions.height : canvasHeight;
-
 				// Re-create fbo
-				if (lastStretchedCanvasWidth != stretchedCanvasWidth
-					|| lastStretchedCanvasHeight != stretchedCanvasHeight
-					|| lastAntiAliasingMode != antiAliasingMode)
+				if (lastStretchedCanvasWidth != stretchedCanvasWidth ||
+					lastStretchedCanvasHeight != stretchedCanvasHeight ||
+					lastAntiAliasingMode != antiAliasingMode)
 				{
 					shutdownAAFbo();
 
@@ -2022,7 +1997,28 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 				shutdownAAFbo();
 			}
 
+			// Setup planar reflection FBO
+			final boolean planarReflectionsEnabled = config.enablePlanarReflections();
+			if (planarReflectionsEnabled)
+			{
+				// Re-create planar reflections FBO if needed
+				if (!lastPlanarReflectionsEnabled ||
+					lastStretchedCanvasWidth != stretchedCanvasWidth ||
+					lastStretchedCanvasHeight != stretchedCanvasHeight)
+				{
+					shutdownPlanarReflectionsFbo();
+					initPlanarReflectionsFbo(stretchedCanvasWidth, stretchedCanvasHeight);
+				}
+			}
+			else
+			{
+				shutdownPlanarReflectionsFbo();
+			}
+
+			lastPlanarReflectionsEnabled = planarReflectionsEnabled;
 			lastAntiAliasingMode = antiAliasingMode;
+			lastStretchedCanvasWidth = stretchedCanvasWidth;
+			lastStretchedCanvasHeight = stretchedCanvasHeight;
 
 			// Clear scene
 			float[] fogColor = hasLoggedIn ? environmentManager.getFogColor() : EnvironmentManager.BLACK_COLOR;
