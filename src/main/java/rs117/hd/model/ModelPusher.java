@@ -7,30 +7,30 @@ import net.runelite.api.*;
 import net.runelite.api.kit.KitType;
 import rs117.hd.HdPlugin;
 import rs117.hd.HdPluginConfig;
+import rs117.hd.data.BakedModels;
 import rs117.hd.data.materials.Material;
 import rs117.hd.data.materials.Overlay;
 import rs117.hd.data.materials.Underlay;
 import rs117.hd.data.materials.UvType;
 import rs117.hd.model.objects.ObjectProperties;
 import rs117.hd.model.objects.ObjectType;
-import rs117.hd.scene.ProceduralGenerator;
-import rs117.hd.data.BakedModels;
 import rs117.hd.model.objects.TzHaarRecolorType;
+import rs117.hd.scene.ProceduralGenerator;
 import rs117.hd.utils.HDUtils;
 import rs117.hd.utils.buffer.GpuFloatBuffer;
 import rs117.hd.utils.buffer.GpuIntBuffer;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Map;
 
 /**
  * Pushes models
  */
 @Singleton
 @Slf4j
-public class ModelPusher
-{
+public class ModelPusher {
     @Inject
     private HdPlugin hdPlugin;
 
@@ -66,7 +66,7 @@ public class ModelPusher
     private final static float[] twelveFloats = new float[12];
     private final static int[] modelColors = new int[HdPlugin.MAX_TRIANGLE * 4];
     private final static ModelData tempModelData = new ModelData();
-    
+
     private final Map<Integer, ModelData> modelCache = new ModelCache(4096);
 
     public void clearModelCache() {
@@ -129,7 +129,7 @@ public class ModelPusher
     }
 
     private float[] getNormalDataForFace(Model model, ObjectProperties objectProperties, int face) {
-        if (model.getFaceColors3()[face] == -1 || (objectProperties != null && objectProperties.isFlatNormals())) {
+        if ((objectProperties != null && objectProperties.isFlatNormals()) || model.getFaceColors3()[face] == -1) {
             return zeroFloats;
         }
 
