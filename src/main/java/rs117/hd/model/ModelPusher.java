@@ -2,7 +2,6 @@ package rs117.hd.model;
 
 import com.google.common.primitives.Ints;
 import com.jogamp.opengl.math.VectorUtil;
-import jdk.internal.misc.VM;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.kit.KitType;

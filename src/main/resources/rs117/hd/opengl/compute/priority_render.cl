@@ -30,41 +30,33 @@
 int priority_map(int p, int distance, int _min10, int avg1, int avg2, int avg3) {
   // (10, 11)  0  1  2  (10, 11)  3  4  (10, 11)  5  6  7  8  9  (10, 11)
   //   0   1   2  3  4    5   6   7  8    9  10  11 12 13 14 15   16  17
-  switch (p) {
-    case 0: return 2;
-    case 1: return 3;
-    case 2: return 4;
-    case 3: return 7;
-    case 4: return 8;
-    case 5: return 11;
-    case 6: return 12;
-    case 7: return 13;
-    case 8: return 14;
-    case 9: return 15;
-    case 10:
-      if (distance > avg1) {
-        return 0;
-      } else if (distance > avg2) {
-        return 5;
-      } else if (distance > avg3) {
-        return 9;
-      } else {
-        return 16;
-      }
-    case 11:
-      if (distance > avg1 && _min10 > avg1) {
-        return 1;
-      } else if (distance > avg2 && (_min10 > avg1 || _min10 > avg2)) {
-        return 6;
-      } else if (distance > avg3 && (_min10 > avg1 || _min10 > avg2 || _min10 > avg3)) {
-        return 10;
-      } else {
-        return 17;
-      }
-    default:
-      // this can't happen unless an invalid priority is sent. just assume 0.
-      return 0;
+  int priorities[10] = { 2, 3, 4, 7, 8, 11, 12, 13, 14, 14 };
+
+  if (p < 10 && p > -1) {
+    return priorities[p];
+  } else if (p == 10) {
+        if (distance > avg1) {
+          return 0;
+        } else if (distance > avg2) {
+          return 5;
+        } else if (distance > avg3) {
+          return 9;
+        } else {
+          return 16;
+        }
+  } else if (p == 11) {
+       if (distance > avg1 && _min10 > avg1) {
+         return 1;
+       } else if (distance > avg2 && (_min10 > avg1 || _min10 > avg2)) {
+         return 6;
+       } else if (distance > avg3 && (_min10 > avg1 || _min10 > avg2 || _min10 > avg3)) {
+         return 10;
+       } else {
+         return 17;
+       }
   }
+
+  return 0;
 }
 
 // calculate the number of faces with a lower adjusted priority than

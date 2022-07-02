@@ -118,7 +118,7 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 	// MAX_MATERIALS and MAX_LIGHTS must match the #defined values in the HD and shadow fragment shaders
 	private static final int MAX_MATERIALS = Material.values().length;
 	private static final int MAX_LIGHTS = 100;
-	private static final int MATERIAL_PROPERTIES_COUNT = 12;
+	private static final int MATERIAL_PROPERTIES_COUNT = 13;
 	private static final int LIGHT_PROPERTIES_COUNT = 8;
 	private static final int SCALAR_BYTES = 4;
 
@@ -561,7 +561,11 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 							log.debug("Disabling DebugGL due to jogl-gldesktop-dbg not being present on the classpath");
 						}
 
-						gl.glEnable(gl.GL_DEBUG_OUTPUT);
+						try {
+							gl.glEnable(gl.GL_DEBUG_OUTPUT);
+						} catch (GLException ex) {
+							// macos doesn't support GL_DEBUG_OUTPUT
+						}
 
 						//	GLDebugEvent[ id 0x20071
 						//		type Warning: generic
@@ -870,9 +874,12 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 		uniTextureOffsets = gl.glGetUniformLocation(glProgram, "textureOffsets");
 		uniAnimationCurrent = gl.glGetUniformLocation(glProgram, "animationCurrent");
 
-		uniBlockSmall = gl.glGetUniformBlockIndex(glSmallComputeProgram, "uniforms");
-		uniBlockLarge = gl.glGetUniformBlockIndex(glComputeProgram, "uniforms");
-		uniBlockMain = gl.glGetUniformBlockIndex(glProgram, "uniforms");
+		if (computeMode != ComputeMode.OPENCL) {
+			uniBlockSmall = gl.glGetUniformBlockIndex(glSmallComputeProgram, "uniforms");
+			uniBlockLarge = gl.glGetUniformBlockIndex(glComputeProgram, "uniforms");
+			uniBlockMain = gl.glGetUniformBlockIndex(glProgram, "uniforms");
+		}
+
 		uniBlockMaterials = gl.glGetUniformBlockIndex(glProgram, "materials");
 		uniBlockPointLights = gl.glGetUniformBlockIndex(glProgram, "pointLights");
 
@@ -1109,7 +1116,7 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 
 		initGlBuffer(materialsUniformBuffer);
 
-		ByteBuffer materialUniformBuf = ByteBuffer.allocateDirect(MAX_MATERIALS * MATERIAL_PROPERTIES_COUNT * SCALAR_BYTES)
+		ByteBuffer materialUniformBuf = ByteBuffer.allocateDirect(MAX_MATERIALS * (MATERIAL_PROPERTIES_COUNT + 3) * SCALAR_BYTES)
 			.order(ByteOrder.nativeOrder());
 		for (int i = 0; i < Math.min(MAX_MATERIALS, Material.values().length); i++)
 		{
@@ -1127,13 +1134,16 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 			materialUniformBuf.putFloat(material.getScrollDurationY());
 			materialUniformBuf.putFloat(material.getTextureScaleX());
 			materialUniformBuf.putFloat(material.getTextureScaleY());
+			materialUniformBuf.putInt(material.getWaterType());
+			materialUniformBuf.put(new byte[12]);
 
 			// UBO elements must be divisible by groups of 4 scalars. Pad any remaining space
-			materialUniformBuf.put(new byte[(((int)Math.ceil(MATERIAL_PROPERTIES_COUNT / 4f) * 4) - MATERIAL_PROPERTIES_COUNT) * SCALAR_BYTES]);
+//			int padding = (((int)Math.ceil(MATERIAL_PROPERTIES_COUNT / 4f) * 4) - MATERIAL_PROPERTIES_COUNT) * SCALAR_BYTES;
+//			materialUniformBuf.put(new byte[padding]);
 		}
 		materialUniformBuf.flip();
 
-		updateBuffer(materialsUniformBuffer, GL_UNIFORM_BUFFER, MAX_MATERIALS * MATERIAL_PROPERTIES_COUNT * SCALAR_BYTES, materialUniformBuf, GL_STATIC_DRAW, CL_MEM_READ_ONLY);
+		updateBuffer(materialsUniformBuffer, GL_UNIFORM_BUFFER, MAX_MATERIALS * (MATERIAL_PROPERTIES_COUNT + 3) * SCALAR_BYTES, materialUniformBuf, GL_STATIC_DRAW, CL_MEM_READ_ONLY);
 		gl.glBindBuffer(GL_UNIFORM_BUFFER, 0);
 	}
 
@@ -2254,7 +2264,7 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 
 	private void uploadScene()
 	{
-//		modelPusher.clearModelCache();
+		modelPusher.clearModelCache();
 		vertexBuffer.clear();
 		uvBuffer.clear();
 		normalBuffer.clear();
