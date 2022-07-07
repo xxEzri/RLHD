@@ -29799,5 +29799,23 @@
     "duration": 0,
     "range": 0,
     "fadeInDuration": 0
+  },
+  {
+    "description": "LOVAKITE_FURNACE",
+    "height": 250,
+    "alignment": "CENTER",
+    "radius": 2000,
+    "strength": 20,
+    "color": [
+      225,
+      225,
+      215
+    ],
+    "type": "FLICKER",
+    "duration": 0,
+    "range": 10,
+    "objectIds": [
+      28562
+    ]
   }
 ]
