@@ -88,7 +88,13 @@ public enum Area
 		new Rect(3193, 3410, 3197, 3416),
 		new Rect(3254, 3406, 3263, 3411)
 	),
-	VARROCK_EAST_BANK(3250, 3416, 3257, 3423),
+	VARROCK_EAST_BANK_CENTER(3251, 3420, 3256, 3422),
+	VARROCK_EAST_BANK(
+			new Rect(3250, 3416, 3257, 3423)
+	),
+	VARROCK_EAST_BANK_OUTSIDE_1(
+			new Rect(3250 ,3424 ,3257 ,3424)
+	),
 	VARROCK(
 		new Rect(3136, 3397, 3290, 3518),
 		new Rect(3177, 3371, 3291, 3410)
@@ -133,6 +139,8 @@ public enum Area
 	MISTHALIN_MYSTERY_MANOR(1600, 4863, 1727, 4779),
 
 	// Falador
+	FALADOR_EAST_BANK_PATH_FIX_2(3006, 3348, 3006, 3346),
+	FALADOR_EAST_BANK_PATH_FIX_1(3006, 3346, 3006, 3344),
 	FALADOR_HAIRDRESSER(
 		new Rect(2941, 3389, 2946, 3376),
 		new Rect(2946, 3376, 2949, 3382)
@@ -174,10 +182,51 @@ public enum Area
 		new Rect(3101, 3504, 3102, 3503), // diagonal 4
 		new Rect(3100, 3503, 3101, 3502)  // diagonal 5
 	),
-	EDGEVILLE_BANK(3098, 3499, 3090, 3488),
-	EDGEVILLE_BANK_SURROUNDING(3087, 3502, 3098, 3483),
+	EDGEVILLE_GUARD_TOWER_FLOOR(
+		new Rect(3111, 3517, 3107, 3511)
+	),
+	EDGEVILLE_FURNACE_FLOOR(
+		new Rect(3110, 3501, 3105, 3496)
+	),
+	EDGEVILLE_MANS_HOUSE_FLOOR(
+		new Rect(3100, 3513, 3091, 3507)
+	),
+	EDGEVILLE_GENERAL_STORE_FLOOR(
+		new Rect(3084, 3513, 3076, 3507)
+	),
+	EDGEVILLE_BANK(3098, 3499, 3091, 3488),
+	EDGEVILLE_BANK_SURROUNDING_GRASS(
+			new Rect(3089, 3500, 3089, 3493), // north stripe next to path
+			new Rect(3090, 3490, 3089, 3488), // south of bank entrance
+			new Rect(3090, 3493, 3090, 3493), // north of bank entrance
+			new Rect(3090, 3500, 3090, 3498) // north of windows
+	),
+	EDGEVILLE_BANK_SURROUNDING_GRASS_RED(
+		new Rect(3092, 3485, 3088, 3484)
+	),
+	EDGEVILLE_BANK_SURROUNDING_GRASS_LIGHTRED(
+			new Rect(3092, 3487, 3089, 3486)
+	),
+	EDGEVILLE_BANK_SURROUNDING_PATH(
+			//new Rect(), // fixes some weird patch outside the door
+			new Rect(3091, 3501, 3089, 3500), // north part of bank
+			new Rect(3093, 3502, 3089, 3500),// path north of bank
+			new Rect(3093, 3500, 3091, 3500), // path west of bank (north part)
+			new Rect(3088, 3502, 3086, 3485), // path west of bank
+			new Rect(3090, 3492, 3089, 3490) // west path to bank
+	),
 	EDGEVILLE_DORIS_HOUSE(3077, 3496, 3081, 3489),
 	EDGEVILLE_MONASTERY(3041, 3509, 3062, 3471),
+	EDGEVILLE_BANK_PERIMETER_FIX(
+		new Rect(3090, 3497, 3090, 3494), // bumpout for window
+		new Rect(3091, 3497, 3091, 3493) // bumpout border correction
+	),
+	EDGEVILLE_BANK_CARPET(
+		new Rect(3092, 3489, 3093,3499),
+		new Rect(3094, 3491, 3094, 3491),
+		new Rect(3094, 3489, 3094, 3489),
+		new Rect(3091, 3491, 3091, 3490)
+	),
 
 	// Seers
 	SEERS_BANK(2719, 3497, 2730, 3487),
@@ -620,6 +669,15 @@ public enum Area
 		new Rect(3697, 3809, 3631, 3782)
 	),
 	FOSSIL_ISLAND(3626, 3908, 3851, 3693),
+	FOSSIL_ISLAND_CENTRAL_BANK_FIX(
+			new Rect(3744, 3805, 3742, 3802)
+	),
+	FOSSIL_ISLAND_HILL_HOUSE_FIX(
+		new Rect(3799, 3885, 3747, 3858)
+	),
+	FOSSIL_ISLAND_HILL_TEXTURE_FIX(
+		new Rect(3845,3900, 3657, 3720)
+	),
 
 	// Karamja
 	KARAMJA_VOLCANO_DUNGEON(2821, 9663, 2875, 9541),
