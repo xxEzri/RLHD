@@ -103,10 +103,22 @@ public enum Overlay
 	CRAFTING_GUILD_TILE_3(4, Area.CRAFTING_GUILD, GroundMaterial.MARBLE_1_GLOSS, new Properties().setBlended(false)),
 
 	// Edgeville
-	EDGEVILLE_BANK_TILE_1(3, Area.EDGEVILLE_BANK, GroundMaterial.MARBLE_1_GLOSS, new Properties().setBlended(false)),
-	EDGEVILLE_BANK_TILE_2(4, Area.EDGEVILLE_BANK, GroundMaterial.MARBLE_2_GLOSS, new Properties().setBlended(false)),
-	EDGEVILLE_BANK_SURROUNDING_STONE(10, Area.EDGEVILLE_BANK_SURROUNDING, GroundMaterial.VARROCK_PATHS),
+	EDGEVILLE_BANK_CARPET_1(3, Area.EDGEVILLE_BANK_CARPET, GroundMaterial.CARPET, new Properties().setHue(-1).setSaturation(9).setLightness(17).setBlended(false)),
+	EDGEVILLE_BANK_CARPET_2(4, Area.EDGEVILLE_BANK_CARPET, GroundMaterial.CARPET, new Properties().setHue(-1).setSaturation(9).setLightness(17).setBlended(false)),
+	EDGEVILLE_BANK_CARPET_3(10, Area.EDGEVILLE_BANK_CARPET, GroundMaterial.CARPET, new Properties().setHue(-1).setSaturation(9).setLightness(17).setBlended(false)),
+	EDGEVILLE_BANK_TILE_1(3, Area.EDGEVILLE_BANK, GroundMaterial.MARBLE_2_GLOSS, new Properties().setBlended(false).setBlendedAsUnderlay(true).setLightness(22)),
+	EDGEVILLE_BANK_TILE_2(4, Area.EDGEVILLE_BANK, GroundMaterial.MARBLE_2_GLOSS, new Properties().setBlended(false).setBlendedAsUnderlay(true).setLightness(26)),
+	EDGEVILLE_BANK_SURROUNDING_GRASS(10, Area.EDGEVILLE_BANK_SURROUNDING_GRASS, GroundMaterial.GRASS_1, new Properties().setBlendedAsUnderlay(true).setHue(11).setSaturation(7).setShiftLightness(-8)),
+	EDGEVILLE_BANK_PERIMETER_FIX(10, Area.EDGEVILLE_BANK_PERIMETER_FIX, GroundMaterial.MARBLE_2_GLOSS, new Properties().setLightness(26)),
+	EDGEVILLE_BANK_PERIMETER(10, Area.EDGEVILLE_BANK, GroundMaterial.MARBLE_2_GLOSS, new Properties().setBlended(false).setBlendedAsUnderlay(true).setLightness(26)),
+	EDGEVILLE_BANK_SURROUNDING_GRASS_RED(10, Area.EDGEVILLE_BANK_SURROUNDING_GRASS_RED, GroundMaterial.GRASS_1, new Properties().setBlendedAsUnderlay(true).setHue(7).setSaturation(8).setShiftLightness(-10)),
+	EDGEVILLE_BANK_SURROUNDING_GRASS_LIGHTRED(10, Area.EDGEVILLE_BANK_SURROUNDING_GRASS_LIGHTRED, GroundMaterial.GRASS_1, new Properties().setBlendedAsUnderlay(true).setHue(8).setSaturation(7).setShiftLightness(-10)),
+	EDGEVILLE_BANK_SURROUNDING_PATH(10, Area.EDGEVILLE_BANK_SURROUNDING_PATH, GroundMaterial.VARROCK_PATHS),
 	EDGEVILLE_DORIS_HOUSE_FLOOR(119, Area.EDGEVILLE_DORIS_HOUSE, GroundMaterial.TILE_SMALL),
+	EDGEVILLE_FURNACE_FLOOR(10, Area.EDGEVILLE_FURNACE_FLOOR, GroundMaterial.TILES_2x2_1),
+	EDGEVILLE_MANS_HOUSE_FLOOR(10, Area.EDGEVILLE_MANS_HOUSE_FLOOR, GroundMaterial.TILE_SMALL, new Properties().setHue(5).setSaturation(4).setShiftLightness(-4)),
+	EDGEVILLE_GENERAL_STORE_FLOOR(10, Area.EDGEVILLE_GENERAL_STORE_FLOOR, GroundMaterial.TILE_SMALL, new Properties().setHue(5).setSaturation(4).setShiftLightness(-4)),
+	EDGEVILLE_GUARD_TOWER_FLOOR(10, Area.EDGEVILLE_GUARD_TOWER_FLOOR, GroundMaterial.CONCRETE),
 	EDGEVILLE_MONASTERY_FLOOR(10, Area.EDGEVILLE_MONASTERY, GroundMaterial.GRAVEL, new Properties().setBlended(false)),
 
 	// Burthorpe

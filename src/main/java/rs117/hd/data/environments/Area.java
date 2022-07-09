@@ -150,34 +150,75 @@ public enum Area
 
 	// Edgeville
 	EDGEVILLE_PATH_OVERLAY(
-		new Rect(3087, 3501, 3099, 3502), // path north of bank
-		new Rect(3079, 3502, 3085, 3503), // path between bank and general store
-		new Rect(3105, 3508, 3113, 3507), // path south of the prison
-		new Rect(3112, 3514, 3119, 3515), // path east of prison
-		new Rect(3120, 3517, 3129, 3516), // path west of bridge
-		new Rect(3119, 3516, 3120, 3515), // prison-bridge path join
-		new Rect(3107, 3508, 3108, 3502), // path to north side of furnace
-		new Rect(3079, 3502, 3080, 3501), // path to dave's house
-		new Rect(3079, 3506, 3080, 3504), // path to general store
-		new Rect(3100, 3496, 3099, 3501), // path east of bank
-		new Rect(3104, 3498, 3103, 3499), // path west side of furnace 1
-		new Rect(3103, 3499, 3102, 3500), // path west side of furnace 2
-		new Rect(3101, 3500, 3102, 3501), // path west side of furnace 3
-		new Rect(3084, 3502, 3088, 3501), // between well and bank
-		new Rect(3113, 3514, 3114, 3509), // south prison join 1
-		new Rect(3112, 3509, 3114, 3508), // south prison join 2
-		new Rect(3101, 3510, 3103, 3509), // path to central building 1
-		new Rect(3104, 3509, 3103, 3508), // path to central building 2
-		new Rect(3104, 3507, 3105, 3506), // diagonal 1
-		new Rect(3103, 3506, 3104, 3505), // diagonal 2
-		new Rect(3102, 3505, 3103, 3504), // diagonal 3
-		new Rect(3101, 3504, 3102, 3503), // diagonal 4
-		new Rect(3100, 3503, 3101, 3502)  // diagonal 5
+			new Rect(3087, 3501, 3099, 3502), // path north of bank
+			new Rect(3079, 3502, 3085, 3503), // path between bank and general store
+			new Rect(3105, 3508, 3113, 3507), // path south of the prison
+			new Rect(3112, 3514, 3119, 3515), // path east of prison
+			new Rect(3120, 3517, 3129, 3516), // path west of bridge
+			new Rect(3119, 3516, 3120, 3515), // prison-bridge path join
+			new Rect(3107, 3508, 3108, 3502), // path to north side of furnace
+			new Rect(3079, 3502, 3080, 3501), // path to dave's house
+			new Rect(3079, 3506, 3080, 3504), // path to general store
+			new Rect(3100, 3496, 3099, 3501), // path east of bank
+			new Rect(3104, 3498, 3103, 3499), // path west side of furnace 1
+			new Rect(3103, 3499, 3102, 3500), // path west side of furnace 2
+			new Rect(3101, 3500, 3102, 3501), // path west side of furnace 3
+			new Rect(3084, 3502, 3088, 3501), // between well and bank
+			new Rect(3113, 3514, 3114, 3509), // south prison join 1
+			new Rect(3112, 3509, 3114, 3508), // south prison join 2
+			new Rect(3101, 3510, 3103, 3509), // path to central building 1
+			new Rect(3104, 3509, 3103, 3508), // path to central building 2
+			new Rect(3104, 3507, 3105, 3506), // diagonal 1
+			new Rect(3103, 3506, 3104, 3505), // diagonal 2
+			new Rect(3102, 3505, 3103, 3504), // diagonal 3
+			new Rect(3101, 3504, 3102, 3503), // diagonal 4
+			new Rect(3100, 3503, 3101, 3502)  // diagonal 5
 	),
-	EDGEVILLE_BANK(3098, 3499, 3090, 3488),
-	EDGEVILLE_BANK_SURROUNDING(3087, 3502, 3098, 3483),
+	EDGEVILLE_GUARD_TOWER_FLOOR(
+			new Rect(3111, 3517, 3107, 3511)
+	),
+	EDGEVILLE_FURNACE_FLOOR(
+			new Rect(3110, 3501, 3105, 3496)
+	),
+	EDGEVILLE_MANS_HOUSE_FLOOR(
+			new Rect(3100, 3513, 3091, 3507)
+	),
+	EDGEVILLE_GENERAL_STORE_FLOOR(
+			new Rect(3084, 3513, 3076, 3507)
+	),
+	EDGEVILLE_BANK(3098, 3499, 3091, 3488),
+	EDGEVILLE_BANK_SURROUNDING_GRASS(
+			new Rect(3089, 3500, 3089, 3493), // north stripe next to path
+			new Rect(3090, 3490, 3089, 3488), // south of bank entrance
+			new Rect(3090, 3493, 3090, 3493), // north of bank entrance
+			new Rect(3090, 3500, 3090, 3498) // north of windows
+	),
+	EDGEVILLE_BANK_SURROUNDING_GRASS_RED(
+			new Rect(3092, 3485, 3088, 3484)
+	),
+	EDGEVILLE_BANK_SURROUNDING_GRASS_LIGHTRED(
+			new Rect(3092, 3487, 3089, 3486)
+	),
+	EDGEVILLE_BANK_SURROUNDING_PATH(
+			//new Rect(), // fixes some weird patch outside the door
+			new Rect(3091, 3501, 3089, 3500), // north part of bank
+			new Rect(3093, 3502, 3089, 3500),// path north of bank
+			new Rect(3093, 3500, 3091, 3500), // path west of bank (north part)
+			new Rect(3088, 3502, 3086, 3485), // path west of bank
+			new Rect(3090, 3492, 3089, 3490) // west path to bank
+	),
 	EDGEVILLE_DORIS_HOUSE(3077, 3496, 3081, 3489),
 	EDGEVILLE_MONASTERY(3041, 3509, 3062, 3471),
+	EDGEVILLE_BANK_PERIMETER_FIX(
+			new Rect(3090, 3497, 3090, 3494), // bumpout for window
+			new Rect(3091, 3497, 3091, 3493) // bumpout border correction
+	),
+	EDGEVILLE_BANK_CARPET(
+			new Rect(3092, 3489, 3093,3499),
+			new Rect(3094, 3491, 3094, 3491),
+			new Rect(3094, 3489, 3094, 3489),
+			new Rect(3091, 3491, 3091, 3490)
+	),
 
 	// Seers
 	SEERS_BANK(2719, 3497, 2730, 3487),
