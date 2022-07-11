@@ -111,7 +111,7 @@ import static rs117.hd.utils.GLUtil.*;
 public class HdPlugin extends Plugin implements DrawCallbacks
 {
 	// This is the maximum number of triangles the compute shaders support
-	public static final int MIN_TRIANGLE = 32;
+	public static final int MIN_TRIANGLE = 256;
 	public static final int MAX_TRIANGLE = 8192;
 	private static final int FLAG_SCENE_BUFFER = Integer.MIN_VALUE;
 	private static final int DEFAULT_DISTANCE = 25;
@@ -274,9 +274,16 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 		GpuIntBuffer buffer = new GpuIntBuffer();
 		int numModels;
 
+		int maxThreadCount;
+		int facesPerThread;
+		int threadCount;
+
 		public ModelBuffer(int maxFaceCount) throws ShaderException
 		{
 			this.maxFaceCount = maxFaceCount;
+			maxThreadCount = glGetInteger(gl, gl.GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS);
+			facesPerThread = (int) Math.ceil((float) maxFaceCount / maxThreadCount);
+			threadCount = (int) Math.ceil((float) maxFaceCount / facesPerThread);
 			initGlBuffer(glBuffer);
 			recompileProgram();
 		}
@@ -293,10 +300,6 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 		public void recompileProgram() throws ShaderException
 		{
 			destroyProgram();
-
-			int maxThreadCount = glGetInteger(gl, gl.GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS);
-			int facesPerThread = (int) Math.ceil((float) maxFaceCount / maxThreadCount);
-			int threadCount = (int) Math.ceil((float) maxFaceCount / facesPerThread);
 
 			Template template = new Template();
 			template.add(key ->
@@ -345,9 +348,11 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 		}
 
 		public void dispatch() {
-			gl.glUseProgram(program);
-			gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 0, glBuffer.glBufferId);
-			gl.glDispatchCompute(numModels, 1, 1);
+			if (numModels > 0) {
+				gl.glUseProgram(program);
+				gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 0, glBuffer.glBufferId);
+				gl.glDispatchCompute(numModels, 1, 1);
+			}
 		}
 	}
 
@@ -659,7 +664,7 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 						int numLevels = IntMath.log2(MAX_TRIANGLE, RoundingMode.FLOOR) - IntMath.log2(MIN_TRIANGLE, RoundingMode.FLOOR);
 						for (int i = 0; i < numLevels; i++)
 						{
-							modelBuffers.add(new ModelBuffer(32 << i));
+							modelBuffers.add(new ModelBuffer(MIN_TRIANGLE << i));
 						}
 						initPrograms();
 					}
