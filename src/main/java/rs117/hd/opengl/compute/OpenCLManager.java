@@ -55,6 +55,8 @@ import org.jocl.cl_mem;
 import org.jocl.cl_platform_id;
 import org.jocl.cl_program;
 import rs117.hd.HdPlugin;
+import static rs117.hd.HdPlugin.MAX_TRIANGLE;
+import static rs117.hd.HdPlugin.MIN_TRIANGLE;
 import rs117.hd.opengl.shader.Template;
 import rs117.hd.utils.buffer.GLBuffer;
 
@@ -68,8 +70,6 @@ public class OpenCLManager
 	private static final String KERNEL_NAME_LARGE = "computeLarge";
 
 	private static final int MIN_WORK_GROUP_SIZE = 256;
-	private static final int SMALL_SIZE = HdPlugin.SMALL_TRIANGLE_COUNT;
-	private static final int LARGE_SIZE = HdPlugin.MAX_TRIANGLE;
 	//  struct shared_data {
 	//      int totalNum[12];
 	//      int totalDistance[12];
@@ -352,8 +352,8 @@ public class OpenCLManager
 
 		// Largest power of 2 less than or equal to maxWorkGroupSize
 		int groupSize = 0x80000000 >>> Integer.numberOfLeadingZeros((int) maxWorkGroupSize[0]);
-		largeFaceCount = LARGE_SIZE / (Math.min(groupSize, LARGE_SIZE));
-		smallFaceCount = SMALL_SIZE / (Math.min(groupSize, SMALL_SIZE));
+		largeFaceCount = MAX_TRIANGLE / (Math.min(groupSize, MAX_TRIANGLE));
+		smallFaceCount = MIN_TRIANGLE / (Math.min(groupSize, MIN_TRIANGLE)); // TODO
 
 		log.debug("Face counts: small: {}, large: {}", smallFaceCount, largeFaceCount);
 	}
@@ -485,7 +485,7 @@ public class OpenCLManager
 
 		if (smallModels > 0)
 		{
-			clSetKernelArg(kernelSmall, 0, (SHARED_SIZE + SMALL_SIZE) * Integer.BYTES, null);
+			clSetKernelArg(kernelSmall, 0, (SHARED_SIZE + MIN_TRIANGLE) * Integer.BYTES, null);
 			clSetKernelArg(kernelSmall, 1, Sizeof.cl_mem, smallBuffer.ptr());
 			clSetKernelArg(kernelSmall, 2, Sizeof.cl_mem, sceneVertexBuffer.ptr());
 			clSetKernelArg(kernelSmall, 3, Sizeof.cl_mem, vertexBuffer.ptr());
@@ -499,12 +499,12 @@ public class OpenCLManager
 			clSetKernelArg(kernelSmall, 11, Sizeof.cl_mem, uniformBuffer.ptr());
 
 			clEnqueueNDRangeKernel(commandQueue, kernelSmall, 1, null,
-				new long[]{smallModels * (SMALL_SIZE / smallFaceCount)}, new long[]{SMALL_SIZE / smallFaceCount}, 1, new cl_event[]{acquireGLBuffers}, computeEvents[numComputeEvents++]);
+				new long[]{smallModels * (MIN_TRIANGLE / smallFaceCount)}, new long[]{MIN_TRIANGLE / smallFaceCount}, 1, new cl_event[]{acquireGLBuffers}, computeEvents[numComputeEvents++]);
 		}
 
 		if (largeModels > 0)
 		{
-			clSetKernelArg(kernelLarge, 0, (SHARED_SIZE + LARGE_SIZE) * Integer.BYTES, null);
+			clSetKernelArg(kernelLarge, 0, (SHARED_SIZE + MAX_TRIANGLE) * Integer.BYTES, null);
 			clSetKernelArg(kernelLarge, 1, Sizeof.cl_mem, largeBuffer.ptr());
 			clSetKernelArg(kernelLarge, 2, Sizeof.cl_mem, sceneVertexBuffer.ptr());
 			clSetKernelArg(kernelLarge, 3, Sizeof.cl_mem, vertexBuffer.ptr());
@@ -518,7 +518,7 @@ public class OpenCLManager
 			clSetKernelArg(kernelLarge, 11, Sizeof.cl_mem, uniformBuffer.ptr());
 
 			clEnqueueNDRangeKernel(commandQueue, kernelLarge, 1, null,
-				new long[]{(long) largeModels * (LARGE_SIZE / largeFaceCount)}, new long[]{LARGE_SIZE / largeFaceCount}, 1, new cl_event[]{acquireGLBuffers}, computeEvents[numComputeEvents++]);
+				new long[]{(long) largeModels * (MAX_TRIANGLE / largeFaceCount)}, new long[]{MAX_TRIANGLE / largeFaceCount}, 1, new cl_event[]{acquireGLBuffers}, computeEvents[numComputeEvents++]);
 		}
 
 		if (numComputeEvents == 0)

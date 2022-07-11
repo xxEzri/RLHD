@@ -25,6 +25,7 @@
  */
 package rs117.hd;
 
+import com.google.common.math.IntMath;
 import com.google.common.primitives.Ints;
 import com.google.inject.Provides;
 import com.jogamp.nativewindow.AbstractGraphicsConfiguration;
@@ -33,6 +34,7 @@ import com.jogamp.nativewindow.awt.AWTGraphicsConfiguration;
 import com.jogamp.nativewindow.awt.JAWTWindow;
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.math.Matrix4;
+import java.math.RoundingMode;
 import javax.inject.Named;
 import jogamp.nativewindow.SurfaceScaleUtils;
 import jogamp.nativewindow.jawt.x11.X11JAWTWindow;
@@ -109,8 +111,8 @@ import static rs117.hd.utils.GLUtil.*;
 public class HdPlugin extends Plugin implements DrawCallbacks
 {
 	// This is the maximum number of triangles the compute shaders support
-	public static final int MAX_TRIANGLE = 6144;
-	public static final int SMALL_TRIANGLE_COUNT = 512;
+	public static final int MIN_TRIANGLE = 32;
+	public static final int MAX_TRIANGLE = 8192;
 	private static final int FLAG_SCENE_BUFFER = Integer.MIN_VALUE;
 	private static final int DEFAULT_DISTANCE = 25;
 	static final int MAX_DISTANCE = 90;
@@ -200,9 +202,6 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 	static final Shader COMPUTE_PROGRAM = new Shader()
 		.add(GL4.GL_COMPUTE_SHADER, "comp.glsl");
 
-	static final Shader SMALL_COMPUTE_PROGRAM = new Shader()
-		.add(GL4.GL_COMPUTE_SHADER, "comp_small.glsl");
-
 	static final Shader UNORDERED_COMPUTE_PROGRAM = new Shader()
 		.add(GL4.GL_COMPUTE_SHADER, "comp_unordered.glsl");
 
@@ -262,20 +261,80 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 	private GpuFloatBuffer normalBuffer;
 
 	private GpuIntBuffer modelBufferUnordered;
-	private GpuIntBuffer modelBufferSmall;
-	private GpuIntBuffer modelBuffer;
-
 	private int unorderedModels;
 
-	/**
-	 * number of models in small buffer
-	 */
-	private int smallModels;
+	private ArrayList<ModelBuffer> modelBuffers = new ArrayList<>();
 
-	/**
-	 * number of models in large buffer
-	 */
-	private int largeModels;
+	class ModelBuffer {
+		final int maxFaceCount;
+		int program;
+		int ubo;
+
+		GLBuffer glBuffer = new GLBuffer();
+		GpuIntBuffer buffer = new GpuIntBuffer();
+		int numModels;
+
+		public ModelBuffer(int maxFaceCount) throws ShaderException
+		{
+			this.maxFaceCount = maxFaceCount;
+			recompileProgram();
+		}
+
+		public void recompileProgram() throws ShaderException
+		{
+			int maxThreadCount = glGetInteger(gl, gl.GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS);
+			int facesPerThread = (int) Math.ceil((float) maxFaceCount / maxThreadCount);
+			int threadCount = (int) Math.ceil((float) maxFaceCount / facesPerThread);
+
+			Template template = new Template();
+			template.add(key ->
+			{
+				switch (key)
+				{
+					case "version_header":
+						return OSType.getOSType() == OSType.Linux ? LINUX_VERSION_HEADER : WINDOWS_VERSION_HEADER;
+					case "FACES_PER_THREAD":
+						return String.format("#define %s %d\n", key, facesPerThread);
+					case "THREAD_COUNT":
+						return String.format("#define %s %d\n", key, threadCount);
+				}
+				return null;
+			});
+			if (developerMode)
+			{
+				template.add(developerTools::shaderResolver);
+			}
+			template.addInclude(HdPlugin.class);
+			program = COMPUTE_PROGRAM.compile(gl, template);
+			ubo = gl.glGetUniformBlockIndex(program, "uniforms");
+			gl.glUniformBlockBinding(program, ubo, 0);
+		}
+
+		public void destroy() {
+			buffer = null;
+		}
+
+		public GpuIntBuffer use() {
+			numModels++;
+			return buffer;
+		}
+
+		public void update() {
+			buffer.flip();
+			updateBuffer(glBuffer, GL_ARRAY_BUFFER, buffer.getBuffer().limit() * Integer.BYTES, buffer.getBuffer(), GL_DYNAMIC_DRAW, CL_MEM_READ_ONLY);
+		}
+
+		public void reset() {
+			numModels = 0;
+			buffer.clear();
+		}
+
+		public void dispatch() {
+			gl.glUseProgram(program);
+			gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 0, glBuffer.glBufferId);
+			gl.glDispatchCompute(numModels, 1, 1);
+		}
+	}
 
 	/**
 	 * offset in the target buffer for model
@@ -357,8 +416,6 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 	private int uniTextureOffsets;
 	private int uniAnimationCurrent;
 
-	private int uniBlockSmall;
-	private int uniBlockLarge;
 	private int uniBlockMain;
 	private int uniBlockMaterials;
 	private int uniShadowBlockMaterials;
@@ -450,7 +507,7 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 				targetBufferOffset = 0;
 				fboSceneHandle = rboSceneHandle = -1; // AA FBO
 				fboShadowMap = -1;
-				unorderedModels = smallModels = largeModels = 0;
+				unorderedModels = 0;
 
 				canvas = client.getCanvas();
 
@@ -468,8 +525,6 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 				normalBuffer = new GpuFloatBuffer();
 
 				modelBufferUnordered = new GpuIntBuffer();
-				modelBufferSmall = new GpuIntBuffer();
-				modelBuffer = new GpuIntBuffer();
 
 				if (log.isDebugEnabled())
 				{
@@ -586,6 +641,11 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 					initVao();
 					try
 					{
+						int numLevels = IntMath.log2(MAX_TRIANGLE, RoundingMode.FLOOR) - IntMath.log2(MIN_TRIANGLE, RoundingMode.FLOOR);
+						for (int i = 0; i < numLevels; i++)
+						{
+							modelBuffers.add(new ModelBuffer(32 << i));
+						}
 						initPrograms();
 					}
 					catch (ShaderException ex)
@@ -672,6 +732,9 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 					destroyGlBuffer(materialsUniformBuffer);
 					destroyGlBuffer(lightsUniformBuffer);
 
+					modelBuffers.forEach(ModelBuffer::destroy);
+					modelBuffers.clear();
+
 					shutdownBuffers();
 					shutdownInterfaceTexture();
 					shutdownPrograms();
@@ -714,8 +777,6 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 			uvBuffer = null;
 			normalBuffer = null;
 
-			modelBufferSmall = null;
-			modelBuffer = null;
 			modelBufferUnordered = null;
 
 			lastAnisotropicFilteringLevel = -1;
@@ -798,8 +859,6 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 		}
 		else
 		{
-			glComputeProgram = COMPUTE_PROGRAM.compile(gl, template);
-			glSmallComputeProgram = SMALL_COMPUTE_PROGRAM.compile(gl, template);
 			glUnorderedComputeProgram = UNORDERED_COMPUTE_PROGRAM.compile(gl, template);
 		}
 
@@ -871,8 +930,6 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 		uniTextureOffsets = gl.glGetUniformLocation(glProgram, "textureOffsets");
 		uniAnimationCurrent = gl.glGetUniformLocation(glProgram, "animationCurrent");
 
-		uniBlockSmall = gl.glGetUniformBlockIndex(glSmallComputeProgram, "uniforms");
-		uniBlockLarge = gl.glGetUniformBlockIndex(glComputeProgram, "uniforms");
 		uniBlockMain = gl.glGetUniformBlockIndex(glProgram, "uniforms");
 		uniBlockMaterials = gl.glGetUniformBlockIndex(glProgram, "materials");
 		uniBlockPointLights = gl.glGetUniformBlockIndex(glProgram, "pointLights");
@@ -930,6 +987,8 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 			{
 				try
 				{
+					for (ModelBuffer buffer : modelBuffers)
+						buffer.recompileProgram();
 					shutdownPrograms();
 					shutdownVao();
 					initVao();
@@ -1341,15 +1400,11 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 		vertexBuffer.flip();
 		uvBuffer.flip();
 		normalBuffer.flip();
-		modelBuffer.flip();
-		modelBufferSmall.flip();
 		modelBufferUnordered.flip();
 
 		IntBuffer vertexBuffer = this.vertexBuffer.getBuffer();
 		FloatBuffer uvBuffer = this.uvBuffer.getBuffer();
 		FloatBuffer normalBuffer = this.normalBuffer.getBuffer();
-		IntBuffer modelBuffer = this.modelBuffer.getBuffer();
-		IntBuffer modelBufferSmall = this.modelBufferSmall.getBuffer();
 		IntBuffer modelBufferUnordered = this.modelBufferUnordered.getBuffer();
 
 		// temp buffers
@@ -1358,8 +1413,7 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 		updateBuffer(tmpNormalBuffer, GL_ARRAY_BUFFER, normalBuffer.limit() * Float.BYTES, normalBuffer, GL_DYNAMIC_DRAW, CL_MEM_READ_ONLY);
 
 		// model buffers
-		updateBuffer(tmpModelBufferLarge, GL_ARRAY_BUFFER, modelBuffer.limit() * Integer.BYTES, modelBuffer, GL_DYNAMIC_DRAW, CL_MEM_READ_ONLY);
-		updateBuffer(tmpModelBufferSmall, GL_ARRAY_BUFFER, modelBufferSmall.limit() * Integer.BYTES, modelBufferSmall, GL_DYNAMIC_DRAW, CL_MEM_READ_ONLY);
+		modelBuffers.forEach(ModelBuffer::update);
 		updateBuffer(tmpModelBufferUnordered, GL_ARRAY_BUFFER, modelBufferUnordered.limit() * Integer.BYTES, modelBufferUnordered, GL_DYNAMIC_DRAW, CL_MEM_READ_ONLY);
 
 		// Output buffers
@@ -1392,7 +1446,7 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 			// gl.glFinish();
 
 			openCLManager.compute(
-				unorderedModels, smallModels, largeModels,
+				unorderedModels, 0, 0, // TODO
 				sceneVertexBuffer, sceneUvBuffer,
 				tmpVertexBuffer, tmpUvBuffer,
 				tmpModelBufferUnordered, tmpModelBufferSmall, tmpModelBufferLarge,
@@ -1407,57 +1461,22 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 		 * to save on GPU resources. Small will sort <= 512 faces, large will do <= 4096.
 		 */
 
-		// Bind UBO to compute programs
-		gl.glUniformBlockBinding(glSmallComputeProgram, uniBlockSmall, 0);
-		gl.glUniformBlockBinding(glComputeProgram, uniBlockLarge, 0);
+		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 1, sceneVertexBuffer.glBufferId);
+		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 2, tmpVertexBuffer.glBufferId);
+		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 3, tmpOutBuffer.glBufferId);
+		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 4, tmpOutUvBuffer.glBufferId);
+		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 5, sceneUvBuffer.glBufferId);
+		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 6, tmpUvBuffer.glBufferId);
+		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 7, tmpOutNormalBuffer.glBufferId);
+		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 8, sceneNormalBuffer.glBufferId);
+		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 9, tmpNormalBuffer.glBufferId);
 
 		// unordered
 		gl.glUseProgram(glUnorderedComputeProgram);
-
 		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 0, tmpModelBufferUnordered.glBufferId);
-		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 1, sceneVertexBuffer.glBufferId);
-		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 2, tmpVertexBuffer.glBufferId);
-		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 3, tmpOutBuffer.glBufferId);
-		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 4, tmpOutUvBuffer.glBufferId);
-		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 5, sceneUvBuffer.glBufferId);
-		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 6, tmpUvBuffer.glBufferId);
-		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 7, tmpOutNormalBuffer.glBufferId);
-		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 8, sceneNormalBuffer.glBufferId);
-		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 9, tmpNormalBuffer.glBufferId);
-
 		gl.glDispatchCompute(unorderedModels, 1, 1);
 
-		// small
-		gl.glUseProgram(glSmallComputeProgram);
-
-		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 0, tmpModelBufferSmall.glBufferId);
-		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 1, sceneVertexBuffer.glBufferId);
-		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 2, tmpVertexBuffer.glBufferId);
-		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 3, tmpOutBuffer.glBufferId);
-		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 4, tmpOutUvBuffer.glBufferId);
-		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 5, sceneUvBuffer.glBufferId);
-		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 6, tmpUvBuffer.glBufferId);
-		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 7, tmpOutNormalBuffer.glBufferId);
-		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 8, sceneNormalBuffer.glBufferId);
-		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 9, tmpNormalBuffer.glBufferId);
-
-		gl.glDispatchCompute(smallModels, 1, 1);
-
-		// large
-		gl.glUseProgram(glComputeProgram);
-
-		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 0, tmpModelBufferLarge.glBufferId);
-		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 1, sceneVertexBuffer.glBufferId);
-		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 2, tmpVertexBuffer.glBufferId);
-		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 3, tmpOutBuffer.glBufferId);
-		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 4, tmpOutUvBuffer.glBufferId);
-		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 5, sceneUvBuffer.glBufferId);
-		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 6, tmpUvBuffer.glBufferId);
-		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 7, tmpOutNormalBuffer.glBufferId);
-		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 8, sceneNormalBuffer.glBufferId);
-		gl.glBindBufferBase(gl.GL_SHADER_STORAGE_BUFFER, 9, tmpNormalBuffer.glBufferId);
-
-		gl.glDispatchCompute(largeModels, 1, 1);
+		modelBuffers.forEach(ModelBuffer::dispatch);
 	}
 
 	@Override
@@ -2069,11 +2088,10 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 			this.vertexBuffer.clear();
 			this.uvBuffer.clear();
 			this.normalBuffer.clear();
-			modelBuffer.clear();
-			modelBufferSmall.clear();
 			modelBufferUnordered.clear();
 
-			smallModels = largeModels = unorderedModels = 0;
+			modelBuffers.forEach(ModelBuffer::reset);
+			unorderedModels = 0;
 			tempOffset = 0;
 			tempUvOffset = 0;
 			tempModelInfoMap.clear();
@@ -2623,16 +2641,10 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 	 */
 	private GpuIntBuffer bufferForTriangles(int triangles)
 	{
-		if (triangles <= SMALL_TRIANGLE_COUNT)
-		{
-			++smallModels;
-			return modelBufferSmall;
-		}
-		else
-		{
-			++largeModels;
-			return modelBuffer;
-		}
+		for (ModelBuffer buffer : modelBuffers)
+			if (buffer.maxFaceCount >= triangles)
+				return buffer.use();
+		throw new IllegalStateException("No compute shader large enough for model with " + triangles + " faces");
 	}
 
 	private int getScaledValue(final double scale, final int value)
