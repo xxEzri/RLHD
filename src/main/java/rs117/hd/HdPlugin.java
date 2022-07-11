@@ -267,7 +267,7 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 
 	class ModelBuffer {
 		final int maxFaceCount;
-		int program;
+		int program = -1;
 		int ubo;
 
 		GLBuffer glBuffer = new GLBuffer();
@@ -277,11 +277,23 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 		public ModelBuffer(int maxFaceCount) throws ShaderException
 		{
 			this.maxFaceCount = maxFaceCount;
+			initGlBuffer(glBuffer);
 			recompileProgram();
+		}
+
+		private void destroyProgram()
+		{
+			if (program != -1)
+			{
+				gl.glDeleteProgram(program);
+				program = -1;
+			}
 		}
 
 		public void recompileProgram() throws ShaderException
 		{
+			destroyProgram();
+
 			int maxThreadCount = glGetInteger(gl, gl.GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS);
 			int facesPerThread = (int) Math.ceil((float) maxFaceCount / maxThreadCount);
 			int threadCount = (int) Math.ceil((float) maxFaceCount / facesPerThread);
@@ -289,6 +301,7 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 			Template template = new Template();
 			template.add(key ->
 			{
+				System.out.println("Computing include " + key + " for face count " + maxFaceCount);
 				switch (key)
 				{
 					case "version_header":
@@ -312,6 +325,8 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 
 		public void destroy() {
 			buffer = null;
+			destroyGlBuffer(glBuffer);
+			destroyProgram();
 		}
 
 		public GpuIntBuffer use() {
