@@ -60,7 +60,12 @@ public enum ObjectProperties
 
 	// Carpet - Not sure if i want to add it; causes graphical glitches enable and see Yanille wizard tower
 	CARPET(Material.CARPET, new Properties().setFlatNormals(false).setUvType(UvType.GROUND_PLANE), 917, 918, 928, 929, 930),
-	
+
+	// Windows
+	CASTLE_WINDOWS(Material.ROCK_1, 1938),
+
+	// Mason
+	STATUES(Material.ROCK_1, 574),
 
 	// Lumbridge
 	LUMBRIDGE_CASTLE_WALLS(Material.NONE, new Properties().setFlatNormals(true), 1651, 1911, 1912, 1913),
