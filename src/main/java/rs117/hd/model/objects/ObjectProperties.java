@@ -54,6 +54,10 @@ public enum ObjectProperties
 	// Wooden Railing
 	WOODEN_RAILING(Material.WOOD_GRAIN,new Properties().setFlatNormals(true), 994),
 
+	// Furniture - Probably will need custom UVs per object.
+	WOODEN_FURNITURE(Material.WOOD_GRAIN,new Properties().setFlatNormals(true).setUvType(UvType.GROUND_PLANE), 593, 1102, 1902),
+	BOOKCASE(Material.BOOKCASE, new Properties().setUvType(UvType.GROUND_PLANE), 380),
+
 	// Lumbridge
 	LUMBRIDGE_CASTLE_WALLS(Material.NONE, new Properties().setFlatNormals(true), 1651, 1911, 1912, 1913),
 
