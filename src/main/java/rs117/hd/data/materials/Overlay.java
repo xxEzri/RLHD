@@ -68,7 +68,9 @@ public enum Overlay
 	VARROCK_BUILDING_FLOOR_1(81, Area.VARROCK, GroundMaterial.TILE_SMALL, new Properties().setBlended(false)),
 	VARROCK_BUILDING_FLOOR_2(4, Area.VARROCK, GroundMaterial.NONE, new Properties().setBlended(false)),
 	VARROCK_PLANT_PATCHES(89, Area.VARROCK, GroundMaterial.DIRT, new Properties().setBlended(false)),
-	VARROCK_EAST_BANK(-83, Area.VARROCK_EAST_BANK, GroundMaterial.MARBLE_2_GLOSS, new Properties().setBlended(false)),
+	VARROCK_EAST_BANK_CENTER(-83, Area.VARROCK_EAST_BANK_CENTER, GroundMaterial.MARBLE_2_GLOSS, new Properties().setBlended(false)),
+	VARROCK_EAST_BANK_OUTSIDE_1(-85, Area.VARROCK_EAST_BANK_OUTSIDE_1, GroundMaterial.VARROCK_PATHS),
+	VARROCK_EAST_BANK(-85, Area.VARROCK_EAST_BANK, GroundMaterial.TILES_2x2_1, new Properties().setBlended(false)),
 	VARROCK_ROOF_GRAVEL(2, Area.VARROCK_CASTLE, GroundMaterial.GRAVEL, new Properties().setBlended(false)),
 	VARROCK_ROOF_ARCHERY_FLOOR_1(-83, Area.VARROCK_CASTLE, GroundMaterial.DIRT, new Properties().setBlended(false)),
 	VARROCK_ROOF_ARCHERY_FLOOR_2(-84, Area.VARROCK_CASTLE, GroundMaterial.DIRT, new Properties().setBlended(false)),
@@ -87,6 +89,8 @@ public enum Overlay
 	KHARID_PATHS_3(25, Area.KHARID_DESERT_REGION, GroundMaterial.DIRT, new Properties().setSaturation(3).setHue(6)),
 
 	// Falador
+	FALADOR_EAST_BANK_PATH_FIX_2(-119, Area.FALADOR_EAST_BANK_PATH_FIX_2, GroundMaterial.FALADOR_PATHS, new Properties().setHue(7).setSaturation(1).setShiftLightness(13).setBlended(false)),
+	FALADOR_EAST_BANK_PATH_FIX_1(-119, Area.FALADOR_EAST_BANK_PATH_FIX_1, GroundMaterial.FALADOR_PATHS, new Properties().setHue(7).setSaturation(1).setShiftLightness(9).setBlended(false)),
 	FALADOR_PATHS(-119, Area.FALADOR, GroundMaterial.FALADOR_PATHS, new Properties().setHue(7).setSaturation(1).setShiftLightness(7)),
 	FALADOR_HAIRDRESSER_TILE_1(77, Area.FALADOR_HAIRDRESSER, GroundMaterial.MARBLE_1_GLOSS, new Properties().setBlended(false)),
 	FALADOR_HAIRDRESSER_TILE_2(123, Area.FALADOR_HAIRDRESSER, GroundMaterial.MARBLE_2_GLOSS, new Properties().setBlended(false)),
@@ -103,10 +107,22 @@ public enum Overlay
 	CRAFTING_GUILD_TILE_3(4, Area.CRAFTING_GUILD, GroundMaterial.MARBLE_1_GLOSS, new Properties().setBlended(false)),
 
 	// Edgeville
-	EDGEVILLE_BANK_TILE_1(3, Area.EDGEVILLE_BANK, GroundMaterial.MARBLE_1_GLOSS, new Properties().setBlended(false)),
-	EDGEVILLE_BANK_TILE_2(4, Area.EDGEVILLE_BANK, GroundMaterial.MARBLE_2_GLOSS, new Properties().setBlended(false)),
-	EDGEVILLE_BANK_SURROUNDING_STONE(10, Area.EDGEVILLE_BANK_SURROUNDING, GroundMaterial.VARROCK_PATHS),
+	EDGEVILLE_BANK_CARPET_1(3, Area.EDGEVILLE_BANK_CARPET, GroundMaterial.CARPET, new Properties().setHue(-1).setSaturation(9).setLightness(17).setBlended(false)),
+	EDGEVILLE_BANK_CARPET_2(4, Area.EDGEVILLE_BANK_CARPET, GroundMaterial.CARPET, new Properties().setHue(-1).setSaturation(9).setLightness(17).setBlended(false)),
+	EDGEVILLE_BANK_CARPET_3(10, Area.EDGEVILLE_BANK_CARPET, GroundMaterial.CARPET, new Properties().setHue(-1).setSaturation(9).setLightness(17).setBlended(false)),
+	EDGEVILLE_BANK_TILE_1(3, Area.EDGEVILLE_BANK, GroundMaterial.MARBLE_2_GLOSS, new Properties().setBlended(false).setBlendedAsUnderlay(true).setLightness(22)),
+	EDGEVILLE_BANK_TILE_2(4, Area.EDGEVILLE_BANK, GroundMaterial.MARBLE_2_GLOSS, new Properties().setBlended(false).setBlendedAsUnderlay(true).setLightness(26)),
+	EDGEVILLE_BANK_SURROUNDING_GRASS(10, Area.EDGEVILLE_BANK_SURROUNDING_GRASS, GroundMaterial.GRASS_1, new Properties().setBlendedAsUnderlay(true).setHue(11).setSaturation(7).setShiftLightness(-8)),
+	EDGEVILLE_BANK_PERIMETER_FIX(10, Area.EDGEVILLE_BANK_PERIMETER_FIX, GroundMaterial.MARBLE_2_GLOSS, new Properties().setLightness(26)),
+	EDGEVILLE_BANK_PERIMETER(10, Area.EDGEVILLE_BANK, GroundMaterial.MARBLE_2_GLOSS, new Properties().setBlended(false).setBlendedAsUnderlay(true).setLightness(26)),
+	EDGEVILLE_BANK_SURROUNDING_GRASS_RED(10, Area.EDGEVILLE_BANK_SURROUNDING_GRASS_RED, GroundMaterial.GRASS_1, new Properties().setBlendedAsUnderlay(true).setHue(7).setSaturation(8).setShiftLightness(-10)),
+	EDGEVILLE_BANK_SURROUNDING_GRASS_LIGHTRED(10, Area.EDGEVILLE_BANK_SURROUNDING_GRASS_LIGHTRED, GroundMaterial.GRASS_1, new Properties().setBlendedAsUnderlay(true).setHue(8).setSaturation(7).setShiftLightness(-10)),
+	EDGEVILLE_BANK_SURROUNDING_PATH(10, Area.EDGEVILLE_BANK_SURROUNDING_PATH, GroundMaterial.VARROCK_PATHS),
 	EDGEVILLE_DORIS_HOUSE_FLOOR(119, Area.EDGEVILLE_DORIS_HOUSE, GroundMaterial.TILE_SMALL),
+	EDGEVILLE_FURNACE_FLOOR(10, Area.EDGEVILLE_FURNACE_FLOOR, GroundMaterial.TILES_2x2_1),
+	EDGEVILLE_MANS_HOUSE_FLOOR(10, Area.EDGEVILLE_MANS_HOUSE_FLOOR, GroundMaterial.TILE_SMALL, new Properties().setHue(5).setSaturation(4).setShiftLightness(-4)),
+	EDGEVILLE_GENERAL_STORE_FLOOR(10, Area.EDGEVILLE_GENERAL_STORE_FLOOR, GroundMaterial.TILE_SMALL, new Properties().setHue(5).setSaturation(4).setShiftLightness(-4)),
+	EDGEVILLE_GUARD_TOWER_FLOOR(10, Area.EDGEVILLE_GUARD_TOWER_FLOOR, GroundMaterial.CONCRETE),
 	EDGEVILLE_MONASTERY_FLOOR(10, Area.EDGEVILLE_MONASTERY, GroundMaterial.GRAVEL, new Properties().setBlended(false)),
 
 	// Burthorpe
@@ -130,6 +146,7 @@ public enum Overlay
 	CATHERBY_BANK_TILE_2(4, Area.CATHERBY_BANK, GroundMaterial.MARBLE_2_GLOSS, new Properties().setBlended(false)),
 
 	// Ardougne
+	WEST_ARDOUGNE_CARPET_FIX(14, Area.WEST_ARDOUGNE_CARPET_FIX, GroundMaterial.CARPET, new Properties().setBlended(false).setShiftLightness(-1).setShiftHue(1)),
 	EAST_ARDOUGNE_CASTLE_DIRT_FIX(14, Area.EAST_ARDOUGNE_CASTLE_DIRT_FIX, GroundMaterial.DIRT, new Properties().setShiftLightness(7).setBlended(false)),
 	EAST_ARDOUGNE_CASTLE_PATH_FIX(10, Area.EAST_ARDOUGNE_CASTLE_PATH_FIX, GroundMaterial.VARROCK_PATHS_LIGHT, new Properties().setShiftLightness(16).setBlended(false)),
 	EAST_ARDOUGNE_PATHS_1(10, Area.EAST_ARDOUGNE, GroundMaterial.VARROCK_PATHS_LIGHT, new Properties().setShiftLightness(6)),
@@ -139,7 +156,8 @@ public enum Overlay
 	// Yanille
 	YANILLE_BANK_TILE_1(3, Area.YANILLE_BANK, GroundMaterial.MARBLE_1_GLOSS, new Properties().setBlended(false)),
 	YANILLE_BANK_TILE_2(4, Area.YANILLE_BANK, GroundMaterial.MARBLE_2_GLOSS, new Properties().setBlended(false)),
-	YANILLE_HUNTER_SHOP_FLOOR(16, Area.YANILLE, GroundMaterial.CARPET, new Properties().setBlended(false)),
+	YANILLE_BANK_REAR_GROUND(2, Area.YANILLE_BANK, GroundMaterial.TILES_2x2_2_GLOSS, new Properties().setBlended(false).setLightness(25)),
+	YANILLE_HUNTER_SHOP_FLOOR(16, Area.YANILLE, GroundMaterial.WOOD_PLANKS_1, new Properties().setBlended(false).setLightness(32)),
 	GUTANOTH_CAVE(29, Area.GUTANOTH_CAVE, WaterType.SWAMP_WATER_FLAT),
 
 	// Draynor
@@ -179,6 +197,9 @@ public enum Overlay
 
 	// Fossil Island
 	ANCIENT_MUSHROOM_POOL(95, Area.FOSSIL_ISLAND, WaterType.SWAMP_WATER_FLAT),
+	FOSSIL_ISLAND_CENTRAL_BANK_FIX(11, Area.FOSSIL_ISLAND_CENTRAL_BANK_FIX, GroundMaterial.GRAVEL, new Properties().setShiftLightness(-2).setBlended(false)),
+	FOSSIL_ISLAND_HILL_HOUSE_FIX(11, Area.FOSSIL_ISLAND_HILL_HOUSE_FIX, GroundMaterial.VARROCK_PATHS),
+	FOSSIL_ISLAND_HILL_TEXTURE_FIX(11, Area.FOSSIL_ISLAND_HILL_TEXTURE_FIX, GroundMaterial.VARIED_DIRT),
 
 	// Zeah
 	XERICS_LOOKOUT_TILE_1(50, Area.XERICS_LOOKOUT, GroundMaterial.TILES_2x2_2, new Properties().setBlended(false)),
@@ -249,6 +270,9 @@ public enum Overlay
 	// Elid Cave fix
 	ELID_CAVE_WATER_FIX(-126, Area.ELID_CAVE, WaterType.WATER),
 
+	// Entrana glass/furnace building fix
+	ENTRANA_GLASS_BUILDING_FIX(10, Area.ENTRANA_GLASS_BUILDING_FIX, GroundMaterial.GRAVEL, new Properties().setShiftLightness(8).setBlended(false)),
+
 
 	// default overlays
 	OVERLAY_N128(-128, WaterType.WATER),
@@ -314,6 +338,7 @@ public enum Overlay
 	OVERLAY_115(115, GroundMaterial.DIRT),
 	OVERLAY_119(119, GroundMaterial.GRAVEL),
 	OVERLAY_123(123, GroundMaterial.DIRT),
+
 
 	// Seasonal
 	WINTER_GRASS(-999, GroundMaterial.SNOW_1, new Properties().setHue(0).setSaturation(0).setShiftLightness(40).setBlended(true)),

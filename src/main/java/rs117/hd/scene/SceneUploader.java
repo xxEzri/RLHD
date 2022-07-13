@@ -45,8 +45,10 @@ import net.runelite.api.SceneTilePaint;
 import net.runelite.api.Tile;
 import net.runelite.api.WallObject;
 import rs117.hd.HdPlugin;
+import rs117.hd.HdPluginConfig;
 import rs117.hd.data.WaterType;
 import rs117.hd.data.materials.GroundMaterial;
+import rs117.hd.model.ModelHasher;
 import rs117.hd.model.objects.ObjectProperties;
 import rs117.hd.data.materials.Overlay;
 import rs117.hd.data.materials.Material;
@@ -73,6 +75,12 @@ class SceneUploader
 
 	@Inject
 	private ModelPusher modelPusher;
+
+	@Inject
+	private ModelHasher modelHasher;
+
+	@Inject
+	private HdPluginConfig config;
 
 	public int sceneId = new Random().nextInt();
 	private int offset;
@@ -136,7 +144,8 @@ class SceneUploader
 		}
 		model.setSceneId(sceneId);
 
-		final int[] lengths = modelPusher.pushModel(null, model, vertexBuffer, uvBuffer, normalBuffer, tileX, tileY, tileZ, objectProperties, objectType, true, 0);
+//		modelHasher.setModel(model);
+		final int[] lengths = modelPusher.pushModel(null, model, vertexBuffer, uvBuffer, normalBuffer, tileX, tileY, tileZ, objectProperties, objectType, true, null);
 
 		offset += lengths[0];
 		uvoffset += lengths[1];

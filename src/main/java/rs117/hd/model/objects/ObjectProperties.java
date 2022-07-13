@@ -37,7 +37,8 @@ public enum ObjectProperties
 	NONE(Material.NONE, -1),
 
 	// Trees
-	TREES(Material.BARK, 1276, 1278, 1293, 1294, 1295, 37329, 2092, 10819, 10820, 10823, 10832, 10833, 10834),
+	TREES(Material.BARK, 1276, 1278, 1282, 1293, 1294, 1295, 2092, 9661, 10819, 10820, 10823, 10832, 10833, 10834, 37329),
+	STICKS(Material.BARK, new Properties().setUvType(UvType.GROUND_PLANE), 1246, 1247),
 
 	// Farming patches
 	FARMING_PATCH_1(Material.DIRT_1, new Properties().setUvType(UvType.GROUND_PLANE), 7517),
@@ -49,6 +50,22 @@ public enum ObjectProperties
 
 	// Wooden Fences
 	WOODEN_FENCES(Material.WOOD_GRAIN,new Properties().setFlatNormals(true),  814, 980, 981, 991, 992,993, 1007, 1008, 1558, 1559, 1560,1561,1562,1563,1564, 1565, 1566, 1567, 1739, 1740, 5432, 5433,5434,5435,5436,5437, 5438, 7055,7527, 9511, 9623),
+
+	// Wooden Railing
+	WOODEN_RAILING(Material.WOOD_GRAIN,new Properties().setFlatNormals(true), 994, 23852),
+
+	// Furniture - Probably will need custom UVs per object.
+	WOODEN_FURNITURE(Material.WOOD_GRAIN,new Properties().setFlatNormals(true).setUvType(UvType.GROUND_PLANE), 593, 598, 1088, 1102, 1106, 1902),
+	BOOKCASE(Material.BOOKCASE, new Properties().setUvType(UvType.GROUND_PLANE), 380),
+
+	// Carpet - Not sure if i want to add it; causes graphical glitches enable and see Yanille wizard tower
+	CARPET(Material.CARPET, new Properties().setFlatNormals(false).setUvType(UvType.GROUND_PLANE), 917, 916, 918, 925, 926, 927, 928, 929, 930, 931, 932, 933, 937, 938, 940, 941, 942, 943, 944, 945, 976, 977, 978, 2382, 2455, 2456, 2457, 2508, 2509, 2510, 4663, 4664, 4665, 4666, 5243, 6251, 6252, 6253, 6762, 6763, 6812, 6813, 6814, 7172, 7173, 7174, 7435, 7436, 7437, 7447, 7480, 7481, 11438, 11439, 11475, 11476, 11477, 11478, 11479, 11480, 21786, 21787, 21788, 21789, 21790, 21791, 24093, 24094, 24095, 25596, 25597, 25598, 40304, 40305, 40306),
+
+	// Windows
+	CASTLE_WINDOWS(Material.ROCK_1, 1938),
+
+	// Mason
+	MARBLE_STATUES(Material.MARBLE, 563, 574, 575, 576, 3699, 3700, 5791, 24037),
 
 	// Lumbridge
 	LUMBRIDGE_CASTLE_WALLS(Material.NONE, new Properties().setFlatNormals(true), 1651, 1911, 1912, 1913),
@@ -127,22 +144,32 @@ public enum ObjectProperties
 	GROUND_DECORATION_TAN_ROCK(Material.DIRT_1, new Properties().setInheritTileColor(true),  7105, 7106, 7107),
 	GROUND_DECORATION_GRAY_ROCK(Material.ROCK_1, new Properties().setInheritTileColor(true), 7103, 7104, 7057),
 	// environment rock objects such as piles of rocks, stalagmites, or rock like structures.
-	ROCK_LIKE_OBJECT(Material.ROCK_1,new Properties().setFlatNormals(true), 84, 3634,3635,3636,3637,3638, 3639, 5950, 5953, 22541, 22542,22543, 25077,25078,25079,25080,25081,25082,25083,25084,25085,25086, 25102, 25103, 25104, 25105, 25106, 25107, 25108, 25109, 25110, 25112,25113,25114,25161),
+	ROCK_LIKE_OBJECT(Material.ROCK_1,new Properties().setFlatNormals(true), 84, 179, 185, 186, 319, 320, 321, 335, 336, 337, 3634, 3635, 3636, 3637, 3638, 3639, 3702, 3703, 3704, 3705, 3706, 3707, 3708, 3709, 3710, 3711, 3720, 3948 ,3949, 3950, 4342, 4343, 4344, 5519, 5520, 5521, 5950, 5953, 20750 ,20751, 22541, 22542, 22543, 25077,25078,25079,25080,25081,25082,25083,25084,25085,25086, 25102, 25103, 25104, 25105, 25106, 25107, 25108, 25109, 25110, 25112, 25113, 25114, 25161),
+	WILDERNESS_DITCH(Material.DIRT_1, new Properties().setFlatNormals(true), 23261, 23262 ,23263, 23264, 23265, 23266, 23267, 23268, 23272, 23273),
+
+	// Game object rocks
+	GAME_OBJECT_DESERT_ROCK(Material.ROCK_2, 11190, 11191, 11192, 11193, 18892, 18893, 18894, 18895, 26640, 26641, 39742, 39743, 39744, 39745, 39746, 39747),
+	GAME_OBJECT_GREY_ROCK(Material.ROCK_2, 3658, 3659, 3660, 3661, 3714, 3716, 3717, 3718, 3805, 3806, 3807, 3808, 29918),
+	GAME_OBJECT_TAN_ROCK(Material.ROCK_2, 10782, 10783, 10784, 10785, 11604, 11605, 12585, 12584),
 
 	// Cave Walls
-	ROCK_CAVE_ENTRANCES(Material.ROCK_2, new Properties().setFlatNormals(true), 6659, 11835, 29627),
+	ROCK_CAVE_ENTRANCES(Material.ROCK_2, new Properties().setFlatNormals(true), 3735, 6659, 11835, 29627),
 	CAVE_WALLS_BLEND(Material.ROCK_2, new Properties().setFlatNormals(true).setUvType(UvType.GROUND_PLANE), 17211, 17210, 17215, 17216, 17217,25049,25050, 25051, 25052,25053,25054,25055,25056,25052, 25059,25060, 25061,25062, 25063,25064,29634),
-	CAVE_WALL_ABOVE_FLOOR_TILE(Material.ROCK_2, new Properties().setFlatNormals(true).setUvType(UvType.GROUND_PLANE), 17224, 25057, 25058),
+	CAVE_WALL_ABOVE_FLOOR_TILE(Material.ROCK_2, new Properties().setFlatNormals(true).setUvType(UvType.GROUND_PLANE), 17224, 25057, 25058,1459,6628,176, 177,178),
 
 	// All Lumbridge wall IDs
 	LUMBRIDGE_CAVE_WALLS(Material.ROCK_2, new Properties().setFlatNormals(true), 5912, 5913, 5914, 5915, 5916, 5917, 5918, 5919, 5920, 5921, 5922, 5923, 5924, 5925, 5926, 5927, 5928, 5929, 5930, 5931, 5932, 5933, 5934, 5935, 5936, 5937, 5938, 5939, 5940, 5941, 5942, 5943, 5944,6903,6925,6927,6929,6930,6931,6932,6933,6939,6940),
 
+	// kinda glitchy until new water is implemented..
+	// BLOOD_STAINS(Material.BLOOD, new Properties().setFlatNormals(true), 653, 652, 654),
 
+	// Agility shortcuts
+	ABILITY_WOODEN_LOGS(Material.BARK, new Properties().setFlatNormals(true), 16546, 16547, 16548),
 
 	// Unknown
 	UNKNOWN_1(Material.GRUNGE_1, new Properties().setFlatNormals(true), 677),
 	UNKNOWN_2(Material.NONE, new Properties().setFlatNormals(true), 1602, 2569, 3089, 3090, 3091, 3096, 3097, 3102, 3103, 3111, 3112, 3113, 3114, 3192, 10748, 10767, 10770),
-	UNKNOWN_3(Material.GRUNGE_1, 2141, 3669, 3714, 3737, 3738, 3759, 3760, 3805, 3806, 3807, 3808, 3812, 6820, 6822, 6826, 6827),
+	UNKNOWN_3(Material.GRUNGE_1, 2141, 3669, 3714, 3737, 3738, 3759, 3760, 3770, 3772, 3773, 3774, 3805, 3806, 3807, 3808, 3812, 6820, 6822, 6826, 6827),
 	UNKNOWN_4(Material.NONE, new Properties().setFlatNormals(true), 39617),
 	UNKNOWN_5(Material.GRUNGE_1, 29032),
 	UNKNOWN_6(Material.NONE, new Properties().setFlatNormals(true), 436, 441, 443, 455, 458, 461, 462, 477),

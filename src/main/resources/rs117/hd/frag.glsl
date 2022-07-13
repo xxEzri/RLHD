@@ -51,6 +51,7 @@ struct Material
     vec2 displacementDuration;
     vec2 scrollDuration;
     vec2 textureScale;
+    int waterType;
 };
 
 layout(std140) uniform materials {
@@ -165,7 +166,7 @@ void main() {
     int displacementMapId = material1.displacementMapId;
 
     bool isWater = false;
-    bool simpleWater = true;
+    bool simpleWater = !(diffuseMapId1 >= 7000 || diffuseMapId2 >= 7000 || diffuseMapId3 >= 7000);
     int waterType = 0;
     float waterSpecularStrength = 0.0;
     float waterSpecularGloss = 500;
@@ -174,177 +175,128 @@ void main() {
     float waterFresnelAmount = 0.0;
     vec3 waterSurfaceColor = vec3(1, 0, 0);
     vec3 waterFoamColor = vec3(0, 0, 0);
-    int waterHasFoam = 1;
+    const int waterHasFoam = 1;
     float waterDuration = 1;
     int waterNormalMap1 = 236;
     int waterNormalMap2 = 236;
 
-    if (
-   diffuseMapId1 == 1 || diffuseMapId1 == 24 || diffuseMapId1 == 7001 || diffuseMapId1 == 7024 ||
-   diffuseMapId2 == 1 || diffuseMapId2 == 24 || diffuseMapId2 == 7001 || diffuseMapId2 == 7024 ||
-   diffuseMapId3 == 1 || diffuseMapId3 == 24 || diffuseMapId3 == 7001 || diffuseMapId3 == 7024)
-    {
+    if (material1.waterType != 0) {
         isWater = true;
-        waterType = WATER;
-    }
-    else if (
-    diffuseMapId1 == 25 || diffuseMapId1 == 7025 ||
-    diffuseMapId2 == 25 || diffuseMapId2 == 7025 ||
-    diffuseMapId3 == 25 || diffuseMapId3 == 7025)
-    {
+        waterType = material1.waterType;
+        diffuseMapId1 = waterNormalMap1; // wave normal map 1
+        diffuseMapId2 = waterNormalMap2; // wave normal map 2
+        diffuseMapId3 = 238; // foam diffuse map
+        displacementMapId = 237; // wave displacement map
+    } else if (material2.waterType != 0) {
         isWater = true;
-        waterType = SWAMP_WATER;
-    }
-    else if (
-    diffuseMapId1 == 998 || diffuseMapId1 == 7998 ||
-    diffuseMapId2 == 998 || diffuseMapId2 == 7998 ||
-    diffuseMapId3 == 998 || diffuseMapId3 == 7998)
-    {
+        waterType = material2.waterType;
+        diffuseMapId1 = waterNormalMap1; // wave normal map 1
+        diffuseMapId2 = waterNormalMap2; // wave normal map 2
+        diffuseMapId3 = 238; // foam diffuse map
+        displacementMapId = 237; // wave displacement map
+    } else if (material3.waterType != 0) {
         isWater = true;
-        waterType = POISON_WASTE;
-    }
-    else if (
-    diffuseMapId1 == 999 || diffuseMapId1 == 7999 ||
-    diffuseMapId2 == 999 || diffuseMapId2 == 7999 ||
-    diffuseMapId3 == 999 || diffuseMapId3 == 7999)
-    {
-        isWater = true;
-        waterType = BLOOD;
-    }
-    else if (
-    diffuseMapId1 == 997 || diffuseMapId1 == 7997 ||
-    diffuseMapId2 == 997 || diffuseMapId2 == 7997 ||
-    diffuseMapId3 == 997 || diffuseMapId3 == 7997)
-    {
-        isWater = true;
-        waterType = ICE;
-    }
-
-    if (isWater)
-    {
-        if (diffuseMapId1 >= 7000 || diffuseMapId2 >= 7000 || diffuseMapId3 >= 7000)
-        {
-            simpleWater = false;
-        }
-
-        switch (waterType)
-        {
-            case WATER:
-            waterSpecularStrength = 0.5;
-            waterSpecularGloss = 500;
-            waterNormalStrength = 0.09;
-            waterBaseOpacity = 0.5;
-            waterFresnelAmount = 1.0;
-            waterSurfaceColor = vec3(1, 1, 1);
-            waterFoamColor = vec3(176, 164, 146);
-            waterHasFoam = 1;
-            waterDuration = 1;
-            waterNormalMap1 = 236;
-            waterNormalMap2 = 236;
-            break;
-            case SWAMP_WATER:
-            waterSpecularStrength = 0.1;
-            waterSpecularGloss = 100;
-            waterNormalStrength = 0.05;
-            waterBaseOpacity = 0.8;
-            waterFresnelAmount = 0.3;
-            waterSurfaceColor = vec3(23, 33, 20) / 255.0;
-            waterFoamColor = vec3(115, 120, 101);
-            waterHasFoam = 1;
-            waterDuration = 1.2;
-            waterNormalMap1 = 236;
-            waterNormalMap2 = 236;
-            break;
-            case POISON_WASTE:
-            waterSpecularStrength = 0.1;
-            waterSpecularGloss = 100;
-            waterNormalStrength = 0.05;
-            waterBaseOpacity = 0.9;
-            waterFresnelAmount = 0.3;
-            waterSurfaceColor = vec3(22, 23, 13) / 255.0;
-            waterFoamColor = vec3(106, 108, 100);
-            waterHasFoam = 1;
-            waterDuration = 1.6;
-            waterNormalMap1 = 236;
-            waterNormalMap2 = 236;
-            break;
-            case BLOOD:
-            waterSpecularStrength = 0.5;
-            waterSpecularGloss = 500;
-            waterNormalStrength = 0.05;
-            waterBaseOpacity = 0.8;
-            waterFresnelAmount = 0.3;
-            waterSurfaceColor = vec3(38, 0, 0) / 255.0;
-            waterFoamColor = vec3(117, 63, 45);
-            waterHasFoam = 1;
-            waterDuration = 2;
-            waterNormalMap1 = 236;
-            waterNormalMap2 = 236;
-            break;
-            case ICE:
-            waterSpecularStrength = 0.3;
-            waterSpecularGloss = 200;
-            waterNormalStrength = 0.04;
-            waterBaseOpacity = 0.85;
-            waterFresnelAmount = 1.0;
-            waterSurfaceColor = vec3(1, 1, 1);
-            waterFoamColor = vec3(150, 150, 150);
-            waterHasFoam = 1;
-            waterDuration = 0;
-            waterNormalMap1 = 246;
-            waterNormalMap2 = 246;
-            break;
-        }
-    }
-
-    if (isWater)
-    {
+        waterType = material3.waterType;
         diffuseMapId1 = waterNormalMap1; // wave normal map 1
         diffuseMapId2 = waterNormalMap2; // wave normal map 2
         diffuseMapId3 = 238; // foam diffuse map
         displacementMapId = 237; // wave displacement map
     }
 
+    switch (waterType)
+    {
+        case 0:
+        break;
+        case WATER:
+        waterSpecularStrength = 0.5;
+        waterSpecularGloss = 500;
+        waterNormalStrength = 0.09;
+        waterBaseOpacity = 0.5;
+        waterFresnelAmount = 1.0;
+        waterSurfaceColor = vec3(1, 1, 1);
+        waterFoamColor = vec3(176, 164, 146);
+        break;
+        case SWAMP_WATER:
+        waterSpecularStrength = 0.1;
+        waterSpecularGloss = 100;
+        waterNormalStrength = 0.05;
+        waterBaseOpacity = 0.8;
+        waterFresnelAmount = 0.3;
+        waterSurfaceColor = vec3(23, 33, 20) / 255.0;
+        waterFoamColor = vec3(115, 120, 101);
+        waterDuration = 1.2;
+        break;
+        case POISON_WASTE:
+        waterSpecularStrength = 0.1;
+        waterSpecularGloss = 100;
+        waterNormalStrength = 0.05;
+        waterBaseOpacity = 0.9;
+        waterFresnelAmount = 0.3;
+        waterSurfaceColor = vec3(22, 23, 13) / 255.0;
+        waterFoamColor = vec3(106, 108, 100);
+        waterDuration = 1.6;
+        break;
+        case BLOOD:
+        waterSpecularStrength = 0.5;
+        waterSpecularGloss = 500;
+        waterNormalStrength = 0.05;
+        waterBaseOpacity = 0.8;
+        waterFresnelAmount = 0.3;
+        waterSurfaceColor = vec3(38, 0, 0) / 255.0;
+        waterFoamColor = vec3(117, 63, 45);
+        waterDuration = 2;
+        break;
+        case ICE:
+        waterSpecularStrength = 0.3;
+        waterSpecularGloss = 200;
+        waterNormalStrength = 0.04;
+        waterBaseOpacity = 0.85;
+        waterFresnelAmount = 1.0;
+        waterSurfaceColor = vec3(1, 1, 1);
+        waterFoamColor = vec3(150, 150, 150);
+        waterDuration = 0;
+        waterNormalMap1 = 246;
+        waterNormalMap2 = 246;
+        break;
+    }
+
     bool isUnderwater = false;
     vec3 waterDepthColor = vec3(0, 0, 0);
     float waterCausticsStrength = 0.0;
-    if (underwaterType != 0)
-    {
+    switch (underwaterType) {
+        case 0:
+        break;
+        case WATER:
         isUnderwater = true;
-
-        if (underwaterType == WATER)
-        {
-            waterDepthColor = vec3(0, 117, 142) / 255.0;
-            waterCausticsStrength = 1.0;
-        }
-        else if (underwaterType == SWAMP_WATER)
-        {
-            waterDepthColor = vec3(41, 82, 26) / 255.0;
-            waterCausticsStrength = 0.0;
-        }
-        else if (underwaterType == POISON_WASTE)
-        {
-            waterDepthColor = vec3(50, 52, 46) / 255.0;
-            waterCausticsStrength = 0.0;
-        }
-        else if (underwaterType == BLOOD)
-        {
-            waterDepthColor = vec3(50, 26, 22) / 255.0;
-            waterCausticsStrength = 0.0;
-        }
-        else if (underwaterType == ICE)
-        {
-            waterDepthColor = vec3(0, 117, 142) / 255.0;
-            waterCausticsStrength = 0.4;
-        }
-    }
-    if (isUnderwater)
-    {
         displacementMapId = 239;
+        waterDepthColor = vec3(0, 117, 142) / 255.0;
+        waterCausticsStrength = 1.0;
+        break;
+        case SWAMP_WATER:
+        isUnderwater = true;
+        displacementMapId = 239;
+        waterDepthColor = vec3(41, 82, 26) / 255.0;
+        waterCausticsStrength = 0.0;
+        break;
+        case POISON_WASTE:
+        isUnderwater = true;
+        displacementMapId = 239;
+        waterDepthColor = vec3(50, 52, 46) / 255.0;
+        waterCausticsStrength = 0.0;
+        break;
+        case BLOOD:
+        isUnderwater = true;
+        displacementMapId = 239;
+        waterDepthColor = vec3(50, 26, 22) / 255.0;
+        waterCausticsStrength = 0.0;
+        break;
+        case ICE:
+        isUnderwater = true;
+        displacementMapId = 239;
+        waterDepthColor = vec3(0, 117, 142) / 255.0;
+        waterCausticsStrength = 0.4;
+        break;
     }
-
-
-
 
     float alpha = 1;
 
@@ -435,21 +387,15 @@ void main() {
     int underlayCount = isUnderlay[0] + isUnderlay[1] + isUnderlay[2];
 
     // calculate blend amounts for overlay and underlay vertices
-    vec3 underlayBlend = texBlend * isUnderlay;
-    vec3 overlayBlend = texBlend * isOverlay;
+    vec3 underlayBlend = texBlend;
+    vec3 overlayBlend = texBlend;
 
-    if (underlayCount == 0 || overlayCount == 0)
-    {
-        // if a tile has all overlay or underlay vertices,
-        // use the default blend
-
-        underlayBlend = texBlend;
-        overlayBlend = texBlend;
-    }
-    else
+    if (!(underlayCount == 0 || overlayCount == 0))
     {
         // if there's a mix of overlay and underlay vertices,
         // calculate custom blends for each 'layer'
+        underlayBlend = texBlend * isUnderlay;
+        overlayBlend = texBlend * isOverlay;
 
         float underlayBlendMultiplier = 1.0 / (underlayBlend[0] + underlayBlend[1] + underlayBlend[2]);
         // adjust back to 1.0 total
@@ -459,7 +405,6 @@ void main() {
         // adjust back to 1.0 total
         overlayBlend *= overlayBlendMultiplier;
     }
-
 
     // get fragment colors by combining vertex colors and texture samples
     vec4 texA = color1;
@@ -491,21 +436,9 @@ void main() {
     vec4 overlayC = texC * overlayBlend[2];
 
     vec4 overlayColor = overlayA + overlayB + overlayC;
-
-
-
-
     float overlayMix = 0;
 
-    if (overlayCount == 3)
-    {
-        overlayMix = 0;
-    }
-    else if (overlayCount == 0)
-    {
-        overlayMix = 0;
-    }
-    else
+    if (overlayCount != 3 && overlayCount != 0)
     {
         // custom blending logic for blending overlays into underlays
         // in a style similar to 2008+ HD
@@ -521,23 +454,16 @@ void main() {
         vec2 uvC = vec2(-999);
         bool inverted = false;
 
+        vec2 vuvs[3];
+        vuvs[0] = vUv1;
+        vuvs[1] = vUv2;
+        vuvs[2] = vUv3;
+
         // assign standalone UV to uvA and others to uvB, uvC
+        #pragma unroll 3
         for (int i = 0; i < 3; i++)
         {
-            vec2 uv;
-
-            if (i == 0)
-            {
-                uv = vUv1;
-            }
-            else if (i == 1)
-            {
-                uv = vUv2;
-            }
-            else if (i == 2)
-            {
-                uv = vUv3;
-            }
+            vec2 uv = vuvs[i];
 
             if ((isOverlay[i] == 1 && overlayCount == 1) || (isUnderlay[i] == 1 && underlayCount == 1))
             {
@@ -615,15 +541,9 @@ void main() {
         normals = normalize(norm1 + norm2);
     }
 
-
-
-
     float lightDotNormals = dot(normals, lightDir);
     float downDotNormals = dot(downDir, normals);
     float viewDotNormals = dot(viewDir, normals);
-
-
-
 
     // sample shadow map
     float shadow = 0.0;
@@ -638,8 +558,11 @@ void main() {
         float shadowMinBias = 0.0005f;
         float shadowBias = max(shadowMaxBias * (1.0 - lightDotNormals), shadowMinBias);
         vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
+
+        #pragma unroll 3
         for(int x = -1; x <= 1; ++x)
         {
+            #pragma unroll 3
             for(int y = -1; y <= 1; ++y)
             {
                 float pcfDepth = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r;
@@ -675,8 +598,6 @@ void main() {
         shadow = projCoords.z > 1.0 ? 0.0 : shadow;
     }
     float inverseShadow = 1.0 - shadow;
-
-
 
     // specular
     vec3 vSpecularGloss = vec3(material1.specularGloss, material2.specularGloss, material3.specularGloss);
@@ -812,11 +733,9 @@ void main() {
     }
     vec3 surfaceColorOut = surfaceColor * max(combinedSpecularStrength, 0.2);
 
-
     // apply lighting
     vec3 compositeLight = ambientLightOut + lightOut + lightSpecularOut + skyLightOut + lightningOut +
         underglowOut + pointLightsOut + pointLightsSpecularOut + surfaceColorOut;
-
 
     if (isWater)
     {

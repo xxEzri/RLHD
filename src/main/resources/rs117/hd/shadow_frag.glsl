@@ -37,6 +37,7 @@ struct Material
     ivec2 displacementDuration;
     ivec2 scrollDuration;
     vec2 textureScale;
+    int waterType;
 };
 
 layout(std140) uniform materials {
@@ -55,20 +56,10 @@ out vec4 FragColor;
 
 void main()
 {
-    if (terrainPlane == 0)
+    // skip water surfaces
+    if (terrainPlane == 0 || material[materialId].waterType != 0)
     {
         discard;
-    }
-
-    // skip water surfaces
-    switch (material[materialId].diffuseMapId)
-    {
-        case 7001:
-        case 7025:
-        case 7997:
-        case 7998:
-        case 7999:
-            discard;
     }
 
     vec2 uv = fUv + textureOffsets[material[materialId].diffuseMapId];

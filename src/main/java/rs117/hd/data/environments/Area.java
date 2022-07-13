@@ -88,7 +88,13 @@ public enum Area
 		new Rect(3193, 3410, 3197, 3416),
 		new Rect(3254, 3406, 3263, 3411)
 	),
-	VARROCK_EAST_BANK(3250, 3416, 3257, 3423),
+	VARROCK_EAST_BANK_CENTER(3251, 3420, 3256, 3422),
+	VARROCK_EAST_BANK(
+			new Rect(3250, 3416, 3257, 3423)
+	),
+	VARROCK_EAST_BANK_OUTSIDE_1(
+			new Rect(3250 ,3424 ,3257 ,3424)
+	),
 	VARROCK(
 		new Rect(3136, 3397, 3290, 3518),
 		new Rect(3177, 3371, 3291, 3410)
@@ -133,6 +139,8 @@ public enum Area
 	MISTHALIN_MYSTERY_MANOR(1600, 4863, 1727, 4779),
 
 	// Falador
+	FALADOR_EAST_BANK_PATH_FIX_2(3006, 3348, 3006, 3346),
+	FALADOR_EAST_BANK_PATH_FIX_1(3006, 3346, 3006, 3344),
 	FALADOR_HAIRDRESSER(
 		new Rect(2941, 3389, 2946, 3376),
 		new Rect(2946, 3376, 2949, 3382)
@@ -150,34 +158,74 @@ public enum Area
 
 	// Edgeville
 	EDGEVILLE_PATH_OVERLAY(
-		new Rect(3087, 3501, 3099, 3502), // path north of bank
-		new Rect(3079, 3502, 3085, 3503), // path between bank and general store
-		new Rect(3105, 3508, 3113, 3507), // path south of the prison
-		new Rect(3112, 3514, 3119, 3515), // path east of prison
-		new Rect(3120, 3517, 3129, 3516), // path west of bridge
-		new Rect(3119, 3516, 3120, 3515), // prison-bridge path join
-		new Rect(3107, 3508, 3108, 3502), // path to north side of furnace
-		new Rect(3079, 3502, 3080, 3501), // path to dave's house
-		new Rect(3079, 3506, 3080, 3504), // path to general store
-		new Rect(3100, 3496, 3099, 3501), // path east of bank
-		new Rect(3104, 3498, 3103, 3499), // path west side of furnace 1
-		new Rect(3103, 3499, 3102, 3500), // path west side of furnace 2
-		new Rect(3101, 3500, 3102, 3501), // path west side of furnace 3
-		new Rect(3084, 3502, 3088, 3501), // between well and bank
-		new Rect(3113, 3514, 3114, 3509), // south prison join 1
-		new Rect(3112, 3509, 3114, 3508), // south prison join 2
-		new Rect(3101, 3510, 3103, 3509), // path to central building 1
-		new Rect(3104, 3509, 3103, 3508), // path to central building 2
-		new Rect(3104, 3507, 3105, 3506), // diagonal 1
-		new Rect(3103, 3506, 3104, 3505), // diagonal 2
-		new Rect(3102, 3505, 3103, 3504), // diagonal 3
-		new Rect(3101, 3504, 3102, 3503), // diagonal 4
-		new Rect(3100, 3503, 3101, 3502)  // diagonal 5
+			new Rect(3087, 3501, 3099, 3502), // path north of bank
+			new Rect(3079, 3502, 3085, 3503), // path between bank and general store
+			new Rect(3105, 3508, 3113, 3507), // path south of the prison
+			new Rect(3112, 3514, 3119, 3515), // path east of prison
+			new Rect(3120, 3517, 3129, 3516), // path west of bridge
+			new Rect(3119, 3516, 3120, 3515), // prison-bridge path join
+			new Rect(3107, 3508, 3108, 3502), // path to north side of furnace
+			new Rect(3079, 3502, 3080, 3501), // path to dave's house
+			new Rect(3079, 3506, 3080, 3504), // path to general store
+			new Rect(3100, 3496, 3099, 3501), // path east of bank
+			new Rect(3104, 3498, 3103, 3499), // path west side of furnace 1
+			new Rect(3103, 3499, 3102, 3500), // path west side of furnace 2
+			new Rect(3101, 3500, 3102, 3501), // path west side of furnace 3
+			new Rect(3084, 3502, 3088, 3501), // between well and bank
+			new Rect(3113, 3514, 3114, 3509), // south prison join 1
+			new Rect(3112, 3509, 3114, 3508), // south prison join 2
+			new Rect(3101, 3510, 3103, 3509), // path to central building 1
+			new Rect(3104, 3509, 3103, 3508), // path to central building 2
+			new Rect(3104, 3507, 3105, 3506), // diagonal 1
+			new Rect(3103, 3506, 3104, 3505), // diagonal 2
+			new Rect(3102, 3505, 3103, 3504), // diagonal 3
+			new Rect(3101, 3504, 3102, 3503), // diagonal 4
+			new Rect(3100, 3503, 3101, 3502)  // diagonal 5
 	),
-	EDGEVILLE_BANK(3098, 3499, 3090, 3488),
-	EDGEVILLE_BANK_SURROUNDING(3087, 3502, 3098, 3483),
+	EDGEVILLE_GUARD_TOWER_FLOOR(
+		new Rect(3111, 3517, 3107, 3511)
+	),
+	EDGEVILLE_FURNACE_FLOOR(
+		new Rect(3110, 3501, 3105, 3496)
+	),
+	EDGEVILLE_MANS_HOUSE_FLOOR(
+		new Rect(3100, 3513, 3091, 3507)
+	),
+	EDGEVILLE_GENERAL_STORE_FLOOR(
+		new Rect(3084, 3513, 3076, 3507)
+	),
+	EDGEVILLE_BANK(3098, 3499, 3091, 3488),
+	EDGEVILLE_BANK_SURROUNDING_GRASS(
+			new Rect(3089, 3500, 3089, 3493), // north stripe next to path
+			new Rect(3090, 3490, 3089, 3488), // south of bank entrance
+			new Rect(3090, 3493, 3090, 3493), // north of bank entrance
+			new Rect(3090, 3500, 3090, 3498) // north of windows
+	),
+	EDGEVILLE_BANK_SURROUNDING_GRASS_RED(
+		new Rect(3092, 3485, 3088, 3484)
+	),
+	EDGEVILLE_BANK_SURROUNDING_GRASS_LIGHTRED(
+			new Rect(3092, 3487, 3089, 3486)
+	),
+	EDGEVILLE_BANK_SURROUNDING_PATH(
+			new Rect(3091, 3501, 3089, 3500), // north part of bank
+			new Rect(3093, 3502, 3089, 3500),// path north of bank
+			new Rect(3093, 3500, 3091, 3500), // path west of bank (north part)
+			new Rect(3088, 3502, 3086, 3485), // path west of bank
+			new Rect(3090, 3492, 3089, 3490) // west path to bank
+	),
 	EDGEVILLE_DORIS_HOUSE(3077, 3496, 3081, 3489),
 	EDGEVILLE_MONASTERY(3041, 3509, 3062, 3471),
+	EDGEVILLE_BANK_PERIMETER_FIX(
+		new Rect(3090, 3497, 3090, 3494), // bumpout for window
+		new Rect(3091, 3497, 3091, 3493) // bumpout border correction
+	),
+	EDGEVILLE_BANK_CARPET(
+		new Rect(3092, 3489, 3093,3499),
+		new Rect(3094, 3491, 3094, 3491),
+		new Rect(3094, 3489, 3094, 3489),
+		new Rect(3091, 3491, 3091, 3490)
+	),
 
 	// Seers
 	SEERS_BANK(2719, 3497, 2730, 3487),
@@ -251,6 +299,10 @@ public enum Area
 		new Rect(2460, 3335, 2558, 3279),
 		new Rect(2558, 3279, 2510, 3264),
 		new Rect(2429, 3323, 2466, 3305)
+	),
+	WEST_ARDOUGNE_CARPET_FIX(
+			new Rect(2544, 3289, 2451, 3286),
+			new Rect(2526, 3317, 2526, 3314)
 	),
 	EAST_ARDOUGNE(
 		new Rect(2558, 3342, 2686, 3257),
@@ -620,6 +672,15 @@ public enum Area
 		new Rect(3697, 3809, 3631, 3782)
 	),
 	FOSSIL_ISLAND(3626, 3908, 3851, 3693),
+	FOSSIL_ISLAND_CENTRAL_BANK_FIX(
+			new Rect(3744, 3805, 3742, 3802)
+	),
+	FOSSIL_ISLAND_HILL_HOUSE_FIX(
+		new Rect(3799, 3885, 3747, 3858)
+	),
+	FOSSIL_ISLAND_HILL_TEXTURE_FIX(
+		new Rect(3845,3900, 3657, 3720)
+	),
 
 	// Karamja
 	KARAMJA_VOLCANO_DUNGEON(2821, 9663, 2875, 9541),
@@ -639,6 +700,7 @@ public enum Area
 	VOID_KNIGHTS_OUTPOST(10537),
 	PEST_CONTROL(10536),
 	CRASH_ISLAND(11562),
+	ENTRANA_GLASS_BUILDING_FIX(2829,3346,2835,3353),
 	ENTRANA(
 		new Rect(2798, 3396, 2873, 3326),
 		new Rect(2873, 3326, 2882, 3344)

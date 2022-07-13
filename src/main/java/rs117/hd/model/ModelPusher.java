@@ -1,27 +1,29 @@
 package rs117.hd.model;
 
 import com.google.common.primitives.Ints;
-import com.jogamp.opengl.math.VectorUtil;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.*;
 import net.runelite.api.kit.KitType;
 import rs117.hd.HdPlugin;
 import rs117.hd.HdPluginConfig;
+import rs117.hd.data.BakedModels;
 import rs117.hd.data.materials.Material;
 import rs117.hd.data.materials.Overlay;
 import rs117.hd.data.materials.Underlay;
 import rs117.hd.data.materials.UvType;
 import rs117.hd.model.objects.ObjectProperties;
 import rs117.hd.model.objects.ObjectType;
-import rs117.hd.scene.ProceduralGenerator;
-import rs117.hd.data.BakedModels;
 import rs117.hd.model.objects.TzHaarRecolorType;
+import rs117.hd.scene.ProceduralGenerator;
 import rs117.hd.utils.HDUtils;
+import static rs117.hd.utils.HDUtils.dotNormal3Lights;
 import rs117.hd.utils.buffer.GpuFloatBuffer;
 import rs117.hd.utils.buffer.GpuIntBuffer;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.util.*;
 
 /**
@@ -29,8 +31,7 @@ import java.util.*;
  */
 @Singleton
 @Slf4j
-public class ModelPusher
-{
+public class ModelPusher {
     @Inject
     private HdPlugin hdPlugin;
 
@@ -43,6 +44,21 @@ public class ModelPusher
     @Inject
     private ProceduralGenerator proceduralGenerator;
 
+    private final IntBufferCache vertexDataCache;
+    private final FloatBufferCache normalDataCache;
+    private final FloatBufferCache uvDataCache;
+    private int pushes = 0;
+    private int vertexDataHits = 0;
+    private int normalDataHits = 0;
+    private int uvDataHits = 0;
+
+    public ModelPusher() {
+        // 3.5G with 80% to vertex data, 15% to normal data, and 5% to uv data
+        this.vertexDataCache = new IntBufferCache(3006477107L);
+        this.normalDataCache = new FloatBufferCache(563714457L);
+        this.uvDataCache = new FloatBufferCache(187904819L);
+    }
+
     // subtracts the X lowest lightness levels from the formula.
     // helps keep darker colors appropriately dark
     private static final int ignoreLowLightness = 3;
@@ -51,12 +67,6 @@ public class ModelPusher
     private static final float lightnessMultiplier = 3f;
     // the minimum amount by which each color will be lightened
     private static final int baseLighten = 10;
-    // a directional vector approximately opposite of the directional light
-    // used by the client
-    private static final float[] inverseLightDirection = new float[]{
-            0.57735026f, 0.57735026f, 0.57735026f
-    };
-
     // same thing but for the normalBuffer and uvBuffer
     private final static float[] zeroFloats = new float[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     private final static int[] twoInts = new int[2];
@@ -65,37 +75,129 @@ public class ModelPusher
     private final static int[] twelveInts = new int[12];
     private final static float[] twelveFloats = new float[12];
     private final static int[] modelColors = new int[HdPlugin.MAX_TRIANGLE * 4];
-    private final static ModelData tempModelData = new ModelData();
-    
-    private final Map<Integer, ModelData> modelCache = new ModelCache(4096);
 
     public void clearModelCache() {
-        modelCache.clear();
+        vertexDataCache.clear();
+        normalDataCache.clear();
+        uvDataCache.clear();
     }
 
-    public int[] pushModel(Renderable renderable, Model model, GpuIntBuffer vertexBuffer, GpuFloatBuffer uvBuffer, GpuFloatBuffer normalBuffer, int tileX, int tileY, int tileZ, ObjectProperties objectProperties, ObjectType objectType, boolean noCache, int hash) {
+    public void printStats() {
+        StringBuilder stats = new StringBuilder();
+        stats.append("\nModel pusher cache stats:\n");
+        stats.append("Vertex cache hit ratio: ").append((float)vertexDataHits/pushes*100).append("%\n");
+        stats.append("Normal cache hit ratio: ").append((float)normalDataHits/pushes*100).append("%\n");
+        stats.append("UV cache hit ratio: ").append((float)uvDataHits/pushes*100).append("%\n");
+        stats.append(vertexDataCache.size()).append(" vertex datas consuming ").append(vertexDataCache.getBytesConsumed()).append(" bytes\n");
+        stats.append(normalDataCache.size()).append(" normal datas consuming ").append(normalDataCache.getBytesConsumed()).append(" bytes\n");
+        stats.append(uvDataCache.size()).append(" uv datas consuming ").append(uvDataCache.getBytesConsumed()).append(" bytes\n");
+
+        log.debug(stats.toString());
+
+        vertexDataHits = 0;
+        normalDataHits = 0;
+        uvDataHits = 0;
+        pushes = 0;
+    }
+
+    public int[] pushModel(Renderable renderable, Model model, GpuIntBuffer vertexBuffer, GpuFloatBuffer uvBuffer, GpuFloatBuffer normalBuffer, int tileX, int tileY, int tileZ, ObjectProperties objectProperties, ObjectType objectType, boolean noCache, ModelHasher modelHasher) {
+        pushes++;
         final int faceCount = Math.min(model.getFaceCount(), HdPlugin.MAX_TRIANGLE);
+        int vertexLength = 0;
+        int uvLength = 0;
 
         // ensure capacity upfront
         vertexBuffer.ensureCapacity(12 * 2 * faceCount);
         normalBuffer.ensureCapacity(12 * 2 * faceCount);
         uvBuffer.ensureCapacity(12 * 2 * faceCount);
 
-        ModelData modelData = getCachedModelData(renderable, model, objectProperties, objectType, tileX, tileY, tileZ, faceCount, noCache, hash);
+        boolean cachedVertexData = false;
+        boolean cachedNormalData = false;
+        boolean cachedUvData = false;
+        int vertexCacheHash = 0;
+        int normalDataCacheHash = 0;
+        int uvDataCacheHash = 0;
 
-        int vertexLength = 0;
-        int uvLength = 0;
-        for (int face = 0; face < faceCount; face++) {
-            vertexBuffer.put(getVertexDataForFace(model, modelData, face));
-            vertexLength += 3;
+        if (!noCache) {
+            vertexCacheHash = modelHasher.calculateVertexCacheHash();
+            normalDataCacheHash = modelHasher.calculateNormalCacheHash();
+            uvDataCacheHash = modelHasher.calculateUvCacheHash(objectProperties == null ? new int[]{} : objectProperties.getId());
 
-            normalBuffer.put(getNormalDataForFace(model, objectProperties, face));
-
-            float[] uvData = getUvDataForFace(model, objectProperties, face);
-            if (uvData != null) {
-                uvBuffer.put(uvData);
-                uvLength += 3;
+            IntBuffer vertexData = vertexDataCache.get(vertexCacheHash);
+            cachedVertexData = vertexData != null;
+            if (cachedVertexData) {
+                vertexDataHits++;
+                vertexLength = faceCount * 3;
+                vertexBuffer.put(vertexData);
+                vertexData.rewind();
             }
+
+            FloatBuffer normalData = normalDataCache.get(normalDataCacheHash);
+            cachedNormalData = normalData != null;
+            if (cachedNormalData) {
+                normalDataHits++;
+                normalBuffer.put(normalData);
+                normalData.rewind();
+            }
+
+            FloatBuffer uvData = uvDataCache.get(uvDataCacheHash);
+            cachedUvData = uvData != null;
+            if (cachedUvData) {
+                uvDataHits++;
+                uvLength = 3 * (uvData.remaining()/12);
+                uvBuffer.put(uvData);
+                uvData.rewind();
+            }
+
+            if (cachedVertexData && cachedUvData && cachedNormalData) {
+                twoInts[0] = vertexLength;
+                twoInts[1] = uvLength;
+                return twoInts;
+            }
+        }
+
+        IntBuffer fullVertexData = GpuIntBuffer.allocateDirect(faceCount * 12);
+        FloatBuffer fullNormalData = GpuFloatBuffer.allocateDirect(faceCount * 12);
+        FloatBuffer fullUvData = GpuFloatBuffer.allocateDirect(faceCount * 12);
+
+        for (int face = 0; face < faceCount; face++) {
+            if (!cachedVertexData) {
+                int[] tempVertexData = getVertexDataForFace(model, getColorsForFace(renderable, model, objectProperties, objectType, tileX, tileY, tileZ, face), face);
+                fullVertexData.put(tempVertexData);
+                vertexBuffer.put(tempVertexData);
+                vertexLength += 3;
+            }
+
+            if (!cachedNormalData) {
+                float[] tempNormalData = getNormalDataForFace(model, objectProperties, face);
+                fullNormalData.put(tempNormalData);
+                normalBuffer.put(tempNormalData);
+            }
+
+            if (!cachedUvData) {
+                float[] tempUvData = getUvDataForFace(model, objectProperties, face);
+                if (tempUvData != null) {
+                    fullUvData.put(tempUvData);
+                    uvBuffer.put(tempUvData);
+                    uvLength += 3;
+                }
+            }
+        }
+
+        fullVertexData.flip();
+        fullNormalData.flip();
+        fullUvData.flip();
+
+        if (!cachedVertexData && !noCache) {
+            vertexDataCache.put(vertexCacheHash, fullVertexData);
+        }
+
+        if (!cachedNormalData && !noCache) {
+            normalDataCache.put(normalDataCacheHash, fullNormalData);
+        }
+
+        if (!cachedUvData && !noCache) {
+            uvDataCache.put(uvDataCacheHash, fullUvData);
         }
 
         twoInts[0] = vertexLength;
@@ -104,7 +206,7 @@ public class ModelPusher
         return twoInts;
     }
 
-    private int[] getVertexDataForFace(Model model, ModelData modelData, int face) {
+    private int[] getVertexDataForFace(Model model, int[] faceColors, int face) {
         final int[] xVertices = model.getVerticesX();
         final int[] yVertices = model.getVerticesY();
         final int[] zVertices = model.getVerticesZ();
@@ -115,21 +217,21 @@ public class ModelPusher
         twelveInts[0] = xVertices[triA];
         twelveInts[1] = yVertices[triA];
         twelveInts[2] = zVertices[triA];
-        twelveInts[3] = modelData.getColorForFace(face, 3) | modelData.getColorForFace(face, 0);
+        twelveInts[3] = faceColors[3] | faceColors[0];
         twelveInts[4] = xVertices[triB];
         twelveInts[5] = yVertices[triB];
         twelveInts[6] = zVertices[triB];
-        twelveInts[7] = modelData.getColorForFace(face, 3) | modelData.getColorForFace(face, 1);
+        twelveInts[7] = faceColors[3] | faceColors[1];
         twelveInts[8] = xVertices[triC];
         twelveInts[9] = yVertices[triC];
         twelveInts[10] = zVertices[triC];
-        twelveInts[11] = modelData.getColorForFace(face, 3) | modelData.getColorForFace(face, 2);
+        twelveInts[11] = faceColors[3] | faceColors[2];
 
         return twelveInts;
     }
 
     private float[] getNormalDataForFace(Model model, ObjectProperties objectProperties, int face) {
-        if (model.getFaceColors3()[face] == -1 || (objectProperties != null && objectProperties.isFlatNormals())) {
+        if ((objectProperties != null && objectProperties.isFlatNormals()) || model.getFaceColors3()[face] == -1) {
             return zeroFloats;
         }
 
@@ -257,23 +359,6 @@ public class ModelPusher
         return materialId << 1 | (isOverlay ? 0b1 : 0b0);
     }
 
-    private ModelData getCachedModelData(Renderable renderable, Model model, ObjectProperties objectProperties, ObjectType objectType, int tileX, int tileY, int tileZ, int faceCount, boolean noCache, int hash) {
-        if (noCache) {
-            tempModelData.setColors(getColorsForModel(renderable, model, objectProperties, objectType, tileX, tileY, tileZ, faceCount));
-            return tempModelData;
-        }
-
-
-        ModelData modelData = modelCache.get(hash);
-        if (modelData == null || modelData.getFaceCount() != model.getFaceCount()) {
-            // get new data if there was no cache or if we detected an exception causing hash collision
-            modelData = new ModelData().setColors(getColorsForModel(renderable, model, objectProperties, objectType, tileX, tileY, tileZ, faceCount)).setFaceCount(model.getFaceCount());
-            modelCache.put(hash, modelData);
-        }
-
-        return modelData;
-    }
-
     private int[] getColorsForModel(Renderable renderable, Model model, ObjectProperties objectProperties, ObjectType objectType, int tileX, int tileY, int tileZ, int faceCount) {
         for (int face = 0; face < faceCount; face++) {
             System.arraycopy(getColorsForFace(renderable, model, objectProperties, objectType, tileX, tileY, tileZ, face), 0, modelColors, face * 4, 4);
@@ -360,27 +445,27 @@ public class ModelPusher
         // reduce the effect of the baked shading by approximately inverting the process by which
         // the shading is added initially.
         int lightenA = (int) (Math.max((color1L - ignoreLowLightness), 0) * lightnessMultiplier) + baseLighten;
-        float dotA = Math.max(VectorUtil.dotVec3(VectorUtil.normalizeVec3(new float[]{
+        float dotA = Math.max(dotNormal3Lights(new float[]{
                 xVertexNormals[triA],
                 yVertexNormals[triA],
                 zVertexNormals[triA],
-        }), inverseLightDirection), 0);
+        }), 0);
         color1L = (int) HDUtils.lerp(color1L, lightenA, dotA);
 
         int lightenB = (int) (Math.max((color2L - ignoreLowLightness), 0) * lightnessMultiplier) + baseLighten;
-        float dotB = Math.max(VectorUtil.dotVec3(VectorUtil.normalizeVec3(new float[]{
+        float dotB = Math.max(dotNormal3Lights(new float[]{
                 xVertexNormals[triB],
                 yVertexNormals[triB],
                 zVertexNormals[triB],
-        }), inverseLightDirection), 0);
+        }), 0);
         color2L = (int) HDUtils.lerp(color2L, lightenB, dotB);
 
         int lightenC = (int) (Math.max((color3L - ignoreLowLightness), 0) * lightnessMultiplier) + baseLighten;
-        float dotC = Math.max(VectorUtil.dotVec3(VectorUtil.normalizeVec3(new float[]{
+        float dotC = Math.max(dotNormal3Lights(new float[]{
                 xVertexNormals[triC],
                 yVertexNormals[triC],
                 zVertexNormals[triC],
-        }), inverseLightDirection), 0);
+        }), 0);
         color3L = (int) HDUtils.lerp(color3L, lightenC, dotC);
 
         int maxBrightness = 55;

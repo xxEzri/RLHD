@@ -277,6 +277,8 @@ public enum Material
 	private final float textureScaleX;
 	private final float textureScaleY;
 
+	private final int waterType;
+
 	private static class Properties
 	{
 		private float specularStrength = 0f;
@@ -342,6 +344,35 @@ public enum Material
 		this.scrollDurationY = 0;
 		this.textureScaleX = 1.0f;
 		this.textureScaleY = 1.0f;
+
+		// set the water type to skip computing it in the shader
+		// these values are defined in frag.glsl
+		switch (diffuseMapId) {
+			case 1:
+			case 24:
+			case 7001:
+			case 7024:
+				waterType = 1;
+				break;
+			case 25:
+			case 7025:
+				waterType = 3;
+				break;
+			case 998:
+			case 7998:
+				waterType = 5;
+				break;
+			case 999:
+			case 7999:
+				waterType = 7;
+				break;
+			case 997:
+			case 7997:
+				waterType = 8;
+				break;
+			default:
+				waterType = 0;
+		}
 	}
 
 	Material(int diffuseMapId, Properties properties)
@@ -358,6 +389,35 @@ public enum Material
 		this.scrollDurationY = properties.scrollDurationY;
 		this.textureScaleX = properties.textureScaleX;
 		this.textureScaleY = properties.textureScaleY;
+
+		// set the water type to skip computing it in the shader
+		// these values are defined in frag.glsl
+		switch (diffuseMapId) {
+			case 1:
+			case 24:
+			case 7001:
+			case 7024:
+				waterType = 1;
+				break;
+			case 25:
+			case 7025:
+				waterType = 3;
+				break;
+			case 998:
+			case 7998:
+				waterType = 5;
+				break;
+			case 999:
+			case 7999:
+				waterType = 7;
+				break;
+			case 997:
+			case 7997:
+				waterType = 8;
+				break;
+			default:
+				waterType = 0;
+		}
 	}
 
 	private static final HashMap<Integer, Material> DIFFUSE_ID_MATERIAL_MAP;
