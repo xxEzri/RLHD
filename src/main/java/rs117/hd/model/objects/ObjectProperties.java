@@ -58,6 +58,10 @@ public enum ObjectProperties
 	WOODEN_FURNITURE(Material.WOOD_GRAIN,new Properties().setFlatNormals(true).setUvType(UvType.GROUND_PLANE), 593, 1102, 1902),
 	BOOKCASE(Material.BOOKCASE, new Properties().setUvType(UvType.GROUND_PLANE), 380),
 
+	// Carpet - Not sure if i want to add it; causes graphical glitches enable and see Yanille wizard tower
+	CARPET(Material.CARPET, new Properties().setFlatNormals(false).setUvType(UvType.GROUND_PLANE), 917, 918, 928, 929, 930),
+	
+
 	// Lumbridge
 	LUMBRIDGE_CASTLE_WALLS(Material.NONE, new Properties().setFlatNormals(true), 1651, 1911, 1912, 1913),
 
