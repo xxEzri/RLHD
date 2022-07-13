@@ -52,20 +52,20 @@ public enum ObjectProperties
 	WOODEN_FENCES(Material.WOOD_GRAIN,new Properties().setFlatNormals(true),  814, 980, 981, 991, 992,993, 1007, 1008, 1558, 1559, 1560,1561,1562,1563,1564, 1565, 1566, 1567, 1739, 1740, 5432, 5433,5434,5435,5436,5437, 5438, 7055,7527, 9511, 9623),
 
 	// Wooden Railing
-	WOODEN_RAILING(Material.WOOD_GRAIN,new Properties().setFlatNormals(true), 994),
+	WOODEN_RAILING(Material.WOOD_GRAIN,new Properties().setFlatNormals(true), 994, 23852),
 
 	// Furniture - Probably will need custom UVs per object.
-	WOODEN_FURNITURE(Material.WOOD_GRAIN,new Properties().setFlatNormals(true).setUvType(UvType.GROUND_PLANE), 593, 1102, 1902),
+	WOODEN_FURNITURE(Material.WOOD_GRAIN,new Properties().setFlatNormals(true).setUvType(UvType.GROUND_PLANE), 593, 598, 1088, 1102, 1106, 1902),
 	BOOKCASE(Material.BOOKCASE, new Properties().setUvType(UvType.GROUND_PLANE), 380),
 
 	// Carpet - Not sure if i want to add it; causes graphical glitches enable and see Yanille wizard tower
-	CARPET(Material.CARPET, new Properties().setFlatNormals(false).setUvType(UvType.GROUND_PLANE), 917, 918, 928, 929, 930),
+	CARPET(Material.CARPET, new Properties().setFlatNormals(false).setUvType(UvType.GROUND_PLANE), 917, 916, 918, 925, 926, 927, 928, 929, 930, 937, 938, 940, 941, 942, 943, 944, 945, 976, 977, 978, 2455, 2456, 2457, 2508, 2509, 2510, 5243, 6251, 6252, 6253, 6812, 6813, 6814, 7172, 7173, 7174, 7435, 7436, 7437, 7447, 7480, 7481, 21786, 21787, 21788, 21789, 21790, 21791, 24093, 24094, 24095, 25596, 25597, 25598, 40304, 40305, 40306),
 
 	// Windows
 	CASTLE_WINDOWS(Material.ROCK_1, 1938),
 
 	// Mason
-	STATUES(Material.ROCK_1, 574),
+	MARBLE_STATUES(Material.MARBLE, 563, 574, 575, 576, 5791, 24037),
 
 	// Lumbridge
 	LUMBRIDGE_CASTLE_WALLS(Material.NONE, new Properties().setFlatNormals(true), 1651, 1911, 1912, 1913),
@@ -141,10 +141,15 @@ public enum ObjectProperties
 	COX_PILLAR(Material.GRUNGE_1, new Properties().setFlatNormals(true), 29806, 29807, 29808, 29809, 29810),
 
 	// Ground decoration rocks
-	GROUND_DECORATION_TAN_ROCK(Material.DIRT_1, new Properties().setInheritTileColor(true),  7105, 7106, 7107, 10785, 10782, 10783, 10784, 10785, 12585, 12584),
+	GROUND_DECORATION_TAN_ROCK(Material.DIRT_1, new Properties().setInheritTileColor(true),  7105, 7106, 7107),
 	GROUND_DECORATION_GRAY_ROCK(Material.ROCK_1, new Properties().setInheritTileColor(true), 7103, 7104, 7057),
 	// environment rock objects such as piles of rocks, stalagmites, or rock like structures.
-	ROCK_LIKE_OBJECT(Material.ROCK_1,new Properties().setFlatNormals(true), 84, 3634,3635,3636,3637,3638, 3639, 5950, 5953, 22541, 22542,22543, 25077,25078,25079,25080,25081,25082,25083,25084,25085,25086, 25102, 25103, 25104, 25105, 25106, 25107, 25108, 25109, 25110, 25112, 25113, 25114, 25161),
+	ROCK_LIKE_OBJECT(Material.ROCK_1,new Properties().setFlatNormals(true), 84, 336, 3634,3635,3636,3637,3638, 3639, 5950, 5953, 22541, 22542,22543, 25077,25078,25079,25080,25081,25082,25083,25084,25085,25086, 25102, 25103, 25104, 25105, 25106, 25107, 25108, 25109, 25110, 25112, 25113, 25114, 25161),
+
+	// Game object rocks
+	GAME_OBJECT_DESERT_ROCK(Material.ROCK_2, 11190, 11191, 11192, 11193, 18892, 18893, 18894, 18895, 26640, 26641, 39742, 39743, 39744, 39745, 39746, 39747),
+	GAME_OBJECT_GREY_ROCK(Material.ROCK_2, 3658, 3659, 3660, 3661, 3714, 3716, 3717, 3718, 3805, 3806, 3807, 3808),
+	GAME_OBJECT_TAN_ROCK(Material.ROCK_2, 10782, 10783, 10784, 10785, 12585, 12584),
 
 	// Cave Walls
 	ROCK_CAVE_ENTRANCES(Material.ROCK_2, new Properties().setFlatNormals(true), 6659, 11835, 29627),
@@ -157,11 +162,13 @@ public enum ObjectProperties
 	// kinda glitchy until new water is implemented..
 	// BLOOD_STAINS(Material.BLOOD, new Properties().setFlatNormals(true), 653, 652, 654),
 
+	// Agility shortcuts
+	ABILITY_WOODEN_LOGS(Material.BARK, new Properties().setFlatNormals(true), 16546, 16547, 16548),
 
 	// Unknown
 	UNKNOWN_1(Material.GRUNGE_1, new Properties().setFlatNormals(true), 677),
 	UNKNOWN_2(Material.NONE, new Properties().setFlatNormals(true), 1602, 2569, 3089, 3090, 3091, 3096, 3097, 3102, 3103, 3111, 3112, 3113, 3114, 3192, 10748, 10767, 10770),
-	UNKNOWN_3(Material.GRUNGE_1, 2141, 3669, 3714, 3737, 3738, 3759, 3760, 3805, 3806, 3807, 3808, 3812, 6820, 6822, 6826, 6827),
+	UNKNOWN_3(Material.GRUNGE_1, 2141, 3669, 3714, 3737, 3738, 3759, 3760, 3770, 3772, 3773, 3774, 3805, 3806, 3807, 3808, 3812, 6820, 6822, 6826, 6827),
 	UNKNOWN_4(Material.NONE, new Properties().setFlatNormals(true), 39617),
 	UNKNOWN_5(Material.GRUNGE_1, 29032),
 	UNKNOWN_6(Material.NONE, new Properties().setFlatNormals(true), 436, 441, 443, 455, 458, 461, 462, 477),
