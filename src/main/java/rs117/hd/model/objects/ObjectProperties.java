@@ -38,6 +38,7 @@ public enum ObjectProperties
 
 	// Trees
 	TREES(Material.BARK, 1276, 1278, 1293, 1294, 1295, 37329, 2092, 10819, 10820, 10823, 10832, 10833, 10834),
+	STICKS(Material.BARK, new Properties().setUvType(UvType.GROUND_PLANE), 1246, 1247),
 
 	// Farming patches
 	FARMING_PATCH_1(Material.DIRT_1, new Properties().setUvType(UvType.GROUND_PLANE), 7517),
@@ -137,8 +138,9 @@ public enum ObjectProperties
 	// All Lumbridge wall IDs
 	LUMBRIDGE_CAVE_WALLS(Material.ROCK_2, new Properties().setFlatNormals(true), 5912, 5913, 5914, 5915, 5916, 5917, 5918, 5919, 5920, 5921, 5922, 5923, 5924, 5925, 5926, 5927, 5928, 5929, 5930, 5931, 5932, 5933, 5934, 5935, 5936, 5937, 5938, 5939, 5940, 5941, 5942, 5943, 5944,6903,6925,6927,6929,6930,6931,6932,6933,6939,6940),
 
-	// Nightmare Zone only currently; should be expanded
-	BLOOD_STAINS(Material.BLOOD, new Properties().setFlatNormals(true), 653, 652, 654),
+	// kinda glitchy until new water is implemented..
+	// BLOOD_STAINS(Material.BLOOD, new Properties().setFlatNormals(true), 653, 652, 654),
+
 
 	// Unknown
 	UNKNOWN_1(Material.GRUNGE_1, new Properties().setFlatNormals(true), 677),
