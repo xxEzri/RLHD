@@ -146,6 +146,7 @@ public enum Overlay
 	CATHERBY_BANK_TILE_2(4, Area.CATHERBY_BANK, GroundMaterial.MARBLE_2_GLOSS, new Properties().setBlended(false)),
 
 	// Ardougne
+	WEST_ARDOUGNE_CARPET_FIX(14, Area.WEST_ARDOUGNE_CARPET_FIX, GroundMaterial.CARPET, new Properties().setBlended(false).setShiftLightness(-1).setShiftHue(1)),
 	EAST_ARDOUGNE_CASTLE_DIRT_FIX(14, Area.EAST_ARDOUGNE_CASTLE_DIRT_FIX, GroundMaterial.DIRT, new Properties().setShiftLightness(7).setBlended(false)),
 	EAST_ARDOUGNE_CASTLE_PATH_FIX(10, Area.EAST_ARDOUGNE_CASTLE_PATH_FIX, GroundMaterial.VARROCK_PATHS_LIGHT, new Properties().setShiftLightness(16).setBlended(false)),
 	EAST_ARDOUGNE_PATHS_1(10, Area.EAST_ARDOUGNE, GroundMaterial.VARROCK_PATHS_LIGHT, new Properties().setShiftLightness(6)),

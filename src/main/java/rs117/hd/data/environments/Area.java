@@ -208,7 +208,6 @@ public enum Area
 			new Rect(3092, 3487, 3089, 3486)
 	),
 	EDGEVILLE_BANK_SURROUNDING_PATH(
-			//new Rect(), // fixes some weird patch outside the door
 			new Rect(3091, 3501, 3089, 3500), // north part of bank
 			new Rect(3093, 3502, 3089, 3500),// path north of bank
 			new Rect(3093, 3500, 3091, 3500), // path west of bank (north part)
@@ -300,6 +299,10 @@ public enum Area
 		new Rect(2460, 3335, 2558, 3279),
 		new Rect(2558, 3279, 2510, 3264),
 		new Rect(2429, 3323, 2466, 3305)
+	),
+	WEST_ARDOUGNE_CARPET_FIX(
+			new Rect(2544, 3289, 2451, 3286),
+			new Rect(2526, 3317, 2526, 3314)
 	),
 	EAST_ARDOUGNE(
 		new Rect(2558, 3342, 2686, 3257),
