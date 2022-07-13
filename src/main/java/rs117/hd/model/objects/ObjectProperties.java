@@ -37,7 +37,7 @@ public enum ObjectProperties
 	NONE(Material.NONE, -1),
 
 	// Trees
-	TREES(Material.BARK, 1276, 1278, 1293, 1294, 1295, 37329, 2092, 10819, 10820, 10823, 10832, 10833, 10834),
+	TREES(Material.BARK, 1276, 1278, 1293, 1294, 1295, 2092, 9661, 10819, 10820, 10823, 10832, 10833, 10834, 37329),
 	STICKS(Material.BARK, new Properties().setUvType(UvType.GROUND_PLANE), 1246, 1247),
 
 	// Farming patches
