@@ -74,6 +74,8 @@ public enum Overlay
 	VARROCK_ROOF_GRAVEL(2, Area.VARROCK_CASTLE, GroundMaterial.GRAVEL, new Properties().setBlended(false)),
 	VARROCK_ROOF_ARCHERY_FLOOR_1(-83, Area.VARROCK_CASTLE, GroundMaterial.DIRT, new Properties().setBlended(false)),
 	VARROCK_ROOF_ARCHERY_FLOOR_2(-84, Area.VARROCK_CASTLE, GroundMaterial.DIRT, new Properties().setBlended(false)),
+	VARROCK_BLUE_MOON_INN_HARD_FLOOR(22, Area.VARROCK_MOON_INN_FLOOR, GroundMaterial.WOOD_PLANKS_1, new Properties().setBlended(false).setShiftHue(1).setLightness(20)),
+	VARROCK_BLUE_MOON_INN_HARD_FLOOR_FIX(22, Area.VARROCK_MOON_INN_FLOOR_FIX, GroundMaterial.WOOD_PLANKS_1),
 
 	// Digsite
 	DIGSITE_DOCK(93, Area.DIGSITE_DOCK, GroundMaterial.TILES_2x2_1_GLOSS, new Properties().setBlended(false)),
