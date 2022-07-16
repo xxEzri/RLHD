@@ -38,11 +38,12 @@ public enum ObjectProperties
 
 	// Trees
 	TREES(Material.BARK, 1276, 1278, 1282, 1286, 1289, 1293, 1294, 1295, 1383, 2092, 9661, 10819, 10820, 10823, 10832, 10833, 10834, 37329),
+	TREE_ROOTS(Material.BARK, 9664, 9665),
 	BUSH_DEAD(Material.BARK, 1122, 4729, 5536, 13840),
 	STICKS(Material.BARK, new Properties().setUvType(UvType.GROUND_PLANE), 1246, 1247),
 	SWAMP_TREE_DEAD(Material.BARK, 1365, 3508, 3510, 3515,3519, 4048, 4049, 4050, 4052, 4054),
 	TREE_DEAD(Material.BARK, 1282, 1283, 1284, 1286),
-	TREE_FALLEN(Material.BARK, 1322, 1335, 1338, 1341),
+	TREE_FALLEN(Material.BARK, 1322, 1335, 1338, 1341, 9663),
 	SWAMP_TREE_FALLEN(Material.BARK,3512, 3514),
 	SWAMP_TREE(Material.BARK,1369),
 	SWAMP_ROOT(Material.BARK, 1363, 1364, 1366, 1367, 1368),
@@ -68,8 +69,10 @@ public enum ObjectProperties
 	LOG_STAIRS(Material.WOOD_GRAIN, new Properties().setFlatNormals(true), 42349),
 
 	// Furniture - Probably will need custom UVs per object.
-	WOODEN_FURNITURE(Material.WOOD_GRAIN,new Properties().setFlatNormals(true).setUvType(UvType.GROUND_PLANE), 593, 598, 616, 1088, 1102, 1106, 1902, 5615, 9531, 11490, 12543, 12544),
+	WOODEN_FURNITURE(Material.WOOD_GRAIN,new Properties().setFlatNormals(true).setUvType(UvType.GROUND_PLANE), 593, 598, 616, 1088, 1102, 1106, 1902, 5615, 9531, 9613, 9614, 9615, 9616, 9617, 9621, 11490, 12543, 12544),
 	BOOKCASE(Material.BOOKCASE, new Properties().setUvType(UvType.GROUND_PLANE), 380),
+	WOODEN_LADDER(Material.WOOD_GRAIN, 9558),
+	WOODEN_STAIRS(Material.WOOD_GRAIN, 18991),
 
 	// Wooden House
 	WOODEN_HOUSE_WALLS(Material.WOOD_GRAIN, 11560, 11561),
