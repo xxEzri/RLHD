@@ -42,7 +42,7 @@ public enum ObjectProperties
 	STICKS(Material.BARK, new Properties().setUvType(UvType.GROUND_PLANE), 1246, 1247),
 	SWAMP_TREE_DEAD(Material.BARK, 1365, 3508, 3510, 3515,3519, 4048, 4049, 4050, 4052, 4054),
 	TREE_DEAD(Material.BARK, 1282, 1283, 1284, 1286),
-	TREE_FALLEN(Material.BARK, 1322),
+	TREE_FALLEN(Material.BARK, 1322, 1335, 1338, 1341),
 	SWAMP_TREE_FALLEN(Material.BARK,3512, 3514),
 	SWAMP_TREE(Material.BARK,1369),
 	SWAMP_ROOT(Material.BARK, 1363, 1364, 1366, 1367, 1368),
@@ -83,7 +83,8 @@ public enum ObjectProperties
 	// Mason
 	GRAVESTONES_MORYTANIA(Material.ROCK_1, 5167, 5168), // Probably elsewhere, feel free to rename and expand
 	MARBLE_STATUES(Material.MARBLE, 563, 574, 575, 576, 3479, 3699, 3700, 5791, 24037),
-
+	WIZARD_TOWER_BRIDGE(Material.GRUNGE_2, 12671, 12383, 12384, 12685, 12686, 12687, 12688, 12689, 12692, 12693, 12694, 12695, 12696),
+	// Metals
 
 	ORE_TIN(Material.DIRT_SHINY_2, 11360, 11361),
 	ORE_COPPER(Material.DIRT_SHINY_2, 10943, 11161),
@@ -92,6 +93,8 @@ public enum ObjectProperties
 	//ORE_GOLD(),
 	ORE_MITHRIL(Material.DIRT_SHINY_2, 11372, 11373),
 	ORE_ADAMENTITE(Material.DIRT_SHINY_2, 11374, 11375),
+
+	POTS_PILE(Material.BLANK_GLOSS, 5610),
 
 	// Lumbridge
 	LUMBRIDGE_CASTLE_WALLS(Material.NONE, new Properties().setFlatNormals(true), 1651, 1911, 1912, 1913),
