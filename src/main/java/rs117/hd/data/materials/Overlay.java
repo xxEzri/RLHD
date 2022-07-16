@@ -62,7 +62,7 @@ public enum Overlay
 	VARROCK_JULIETS_HOUSE_CARPET_RED(-93, Area.VARROCK_JULIETS_HOUSE, GroundMaterial.CARPET, new Properties().setBlended(false)),
 	VARROCK_JULIETS_HOUSE_CARPET_PINK(-96, Area.VARROCK_JULIETS_HOUSE, GroundMaterial.CARPET, new Properties().setBlended(false)),
 	VARROCK_JOLLY_BOAR_INN_KITCHEN(-84, Area.VARROCK_JOLLY_BOAR_INN, GroundMaterial.NONE, new Properties().setBlended(false)),
-	VARROCK_CHURCH(-83, Area.VARROCK_CHURCH, GroundMaterial.NONE, new Properties().setBlended(false)),
+	VARROCK_CHURCH(-83, Area.VARROCK_CHURCH, GroundMaterial.CARPET, new Properties().setBlended(false)),
 	VARROCK_ANVILS(81, Area.VARROCK_ANVILS, GroundMaterial.DIRT),
 	VARROCK_BUILDING_RUINS(81, Area.VARROCK_BUILDING_RUINS, GroundMaterial.DIRT),
 	VARROCK_BUILDING_FLOOR_1(81, Area.VARROCK, GroundMaterial.TILE_SMALL, new Properties().setBlended(false)),
