@@ -71,21 +71,23 @@ public enum ObjectProperties
 	//WAKKA_CANOE_DOCK(Material.BARK, 12163), // Does not work; animated items cannot be textured
 
 	// Furniture - Probably will need custom UVs per object.
-	WOODEN_FURNITURE(Material.WOOD_GRAIN,new Properties().setFlatNormals(true).setUvType(UvType.GROUND_PLANE), 593, 598, 1088, 1102, 1106, 1902),
+	WOODEN_FURNITURE(Material.WOOD_GRAIN,new Properties().setFlatNormals(true).setUvType(UvType.GROUND_PLANE), 593, 598, 1088, 1102, 1106, 1902, 12543, 12544),
 	BOOKCASE(Material.BOOKCASE, new Properties().setUvType(UvType.GROUND_PLANE), 380),
 
 	// Wooden House
 	WOODEN_HOUSE_WALLS(Material.WOOD_GRAIN, 11560, 11561),
 
 	// Carpet - Not sure if i want to add it; causes graphical glitches enable and see Yanille wizard tower
-	CARPET(Material.CARPET, new Properties().setFlatNormals(false).setUvType(UvType.GROUND_PLANE), 917, 916, 918, 925, 926, 927, 928, 929, 930, 931, 932, 933, 937, 938, 940, 941, 942, 943, 944, 945, 976, 977, 978, 2382, 2455, 2456, 2457, 2508, 2509, 2510, 4663, 4664, 4665, 4666, 5243, 6251, 6252, 6253, 6762, 6763, 6812, 6813, 6814, 7172, 7173, 7174, 7435, 7436, 7437, 7447, 7480, 7481, 11475, 11476, 11477, 11478, 11479, 11480, 21786, 21787, 21788, 21789, 21790, 21791, 24093, 24094, 24095, 25596, 25597, 25598, 40304, 40305, 40306),
+	CARPET(Material.CARPET, new Properties().setFlatNormals(false).setUvType(UvType.GROUND_PLANE), 917, 916, 918, 925, 926, 927, 928, 929, 930, 931, 932, 933, 937, 938, 940, 941, 942, 943, 944, 945, 976, 977, 978, 2382, 2455, 2456, 2457, 2508, 2509, 2510, 4663, 4664, 4665, 4666, 5243, 6251, 6252, 6253, 6762, 6763, 6812, 6813, 6814, 7172, 7173, 7174, 7435, 7436, 7437, 7447, 7480, 7481, 9679, 9680, 9681, 11475, 11476, 11477, 11478, 11479, 11480, 21786, 21787, 21788, 21789, 21790, 21791, 24093, 24094, 24095, 25596, 25597, 25598, 40304, 40305, 40306),
 
 	// Mason
 	GRAVESTONES_MORYTANIA(Material.ROCK_1, 5167, 5168), // Probably elsewhere, feel free to rename and expand
 	MARBLE_STATUES(Material.MARBLE, 563, 574, 575, 576, 3479, 3699, 3700, 5791, 24037),
 	WIZARD_TOWER_BRIDGE(Material.GRUNGE_2, 12671, 12383, 12384, 12685, 12686, 12687, 12688, 12689, 12692, 12693, 12694, 12695, 12696),
-	// Metals
+	WIZARD_TOWER(Material.GRUNGE_2, 12662, 12663, 12664, 12669, 12670, 12671, 12672, 12673, 12674, 12680, 12695),
 
+
+	// Metals
 	ORE_TIN(Material.DIRT_SHINY_2, 11360, 11361),
 	ORE_COPPER(Material.DIRT_SHINY_2, 10943, 11161),
 	//ORE_IRON(),
@@ -95,6 +97,8 @@ public enum ObjectProperties
 	ORE_ADAMENTITE(Material.DIRT_SHINY_2, 11374, 11375),
 
 	POTS_PILE(Material.BLANK_GLOSS, 5610),
+	IRON_BARS(Material.BLANK_SEMIGLOSS, 24097),
+	GOLDEN_CANDELABRA(Material.BLANK_SEMIGLOSS, 203),
 
 	// Lumbridge
 	LUMBRIDGE_CASTLE_WALLS(Material.NONE, new Properties().setFlatNormals(true), 1651, 1911, 1912, 1913),
