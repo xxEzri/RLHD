@@ -58,7 +58,7 @@ public enum ObjectProperties
 	FERN(Material.NONE, new Properties().setInheritTileColor(true), 19827, 19833, 19839),
 
 	// Wooden Fences
-	WOODEN_FENCES(Material.WOOD_GRAIN,new Properties().setFlatNormals(true),  446, 814, 980, 981, 991, 992, 993, 1007, 1008, 1558, 1559, 1560, 1561, 1562, 1563, 1564, 1565, 1566, 1567, 1739, 1740, 5432, 5433, 5434, 5435, 5436, 5437, 5438, 7055,7527, 9511, 9623, 9589, 12430, 12431, 15514, 15516, 23848, 23849, 23820, 23851, 23905),
+	WOODEN_FENCES(Material.WOOD_GRAIN,new Properties().setFlatNormals(true),  446, 814, 980, 981, 991, 992, 993, 1007, 1008, 1558, 1559, 1560, 1561, 1562, 1563, 1564, 1565, 1566, 1567, 1739, 1740, 3729, 5432, 5433, 5434, 5435, 5436, 5437, 5438, 7055,7527, 9511, 9623, 9589, 12430, 12431, 15514, 15516, 23848, 23849, 23820, 23851, 23905),
 	WOODEN_FENCE_GATES(Material.WOOD_GRAIN,new Properties().setFlatNormals(true), 2050, 2051),
 
 	// Wooden Railing
@@ -69,9 +69,10 @@ public enum ObjectProperties
 	LOG_STAIRS(Material.WOOD_GRAIN, new Properties().setFlatNormals(true), 42349),
 
 	// Furniture - Probably will need custom UVs per object.
-	WOODEN_FURNITURE(Material.WOOD_GRAIN,new Properties().setFlatNormals(true).setUvType(UvType.GROUND_PLANE), 593, 598, 616, 1088, 1102, 1106, 1902, 5615, 9531, 9613, 9614, 9615, 9616, 9617, 9621, 11490, 12543, 12544),
+	WOODEN_FURNITURE(Material.WOOD_GRAIN,new Properties().setFlatNormals(true).setUvType(UvType.GROUND_PLANE), 593, 598, 611, 616, 1088, 1102, 1106, 1902, 5615, 9531, 9613, 9614, 9615, 9616, 9617, 9621, 11490, 12543, 12544),
 	BOOKCASE(Material.BOOKCASE, new Properties().setUvType(UvType.GROUND_PLANE), 380),
-	WOODEN_LADDER(Material.WOOD_GRAIN, 9558, 16450),
+	WOODEN_LADDER(Material.WOOD_GRAIN, 9558, 16450, 17026),
+	WOODEN_STEPSTOOL(Material.WOOD_GRAIN, 17390),
 	WOODEN_STAIRS(Material.WOOD_GRAIN, 18991),
 
 	// Wooden House
@@ -82,7 +83,7 @@ public enum ObjectProperties
 
 	// Mason
 	GRAVESTONES_MORYTANIA(Material.ROCK_1, 5167, 5168), // Probably elsewhere, feel free to rename and expand
-	MARBLE_STATUES(Material.MARBLE, 563, 574, 575, 576, 3479, 3699, 3700, 5791, 9668, 24037),
+	MARBLE_STATUES(Material.MARBLE, 563, 574, 575, 576, 3479, 3699, 3700, 5791, 9668, 24037, 24716),
 	WIZARD_TOWER_BRIDGE(Material.GRUNGE_2, 12671, 12383, 12384, 12685, 12686, 12687, 12688, 12689, 12692, 12693, 12694, 12695, 12696),
 	WIZARD_TOWER(Material.GRUNGE_2, 12662, 12663, 12664, 12669, 12670, 12671, 12672, 12673, 12674, 12680, 12695),
 	WIZARD_TOWER_FOUNTAIN_STATUE(Material.GRUNGE_1, 879),
@@ -134,7 +135,7 @@ public enum ObjectProperties
 
 	// Goblin Village
 	GOBLIN_VILLAGE_LOGS(Material.BARK, 12275, 23332, 23333, 23334, 23335, 23336, 23337),
-	GOBLIN_VILLAGE_WOOD(Material.WOOD_GRAIN,12416, 12429, 12436, 12437, 12439, 12341, 23320, 23321),
+	GOBLIN_VILLAGE_WOOD(Material.WOOD_GRAIN,12416, 12429, 12436, 12437, 12439, 12441, 23320, 23321),
 	// Al Kharid
 	AL_KHARID_WALLS(Material.NONE, new Properties().setFlatNormals(true), 1415, 1416, 21799, 33348),
 	// Citharede Abbey
@@ -144,6 +145,8 @@ public enum ObjectProperties
 	SEERS_COURTHOUSE_WALLS(Material.GRUNGE_1, new Properties().setFlatNormals(true), 25966, 25967, 25969, 25970, 25971, 25972, 25973, 25974, 25975, 25978, 25979, 25980, 25981, 26010),
 	SEERS_BUILDING_WALLS(Material.GRUNGE_1, new Properties().setFlatNormals(true), 25753, 25755, 25756, 25757, 25890, 25896, 25897, 25898, 25899, 25901, 25902, 25904, 25957, 25958, 25959, 25960, 25961, 25962, 25963, 25964, 25965, 25905),
 
+
+	SEERS_FENCE_WHITE(Material.WOOD_GRAIN, 25760),
 	// Stone walls (north of Falador)
 	STONE_WALL(Material.GRUNGE_1, new Properties().setFlatNormals(true), 979 , 5566, 5567, 5568, 5569, 5570),
 
