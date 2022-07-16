@@ -55,7 +55,7 @@ public enum ObjectProperties
 	FERN(Material.NONE, new Properties().setInheritTileColor(true), 19827, 19833, 19839),
 
 	// Wooden Fences
-	WOODEN_FENCES(Material.WOOD_GRAIN,new Properties().setFlatNormals(true),  436, 814, 980, 981, 991, 992,993, 1007, 1008, 1558, 1559, 1560, 1561, 1562, 1563, 1564, 1565, 1566, 1567, 1739, 1740, 5432, 5433, 5434, 5435, 5436, 5437, 5438, 7055,7527, 9511, 9623, 15514, 15516, 23848, 23849, 23820, 23851, 23905),
+	WOODEN_FENCES(Material.WOOD_GRAIN,new Properties().setFlatNormals(true),  446, 814, 980, 981, 991, 992,993, 1007, 1008, 1558, 1559, 1560, 1561, 1562, 1563, 1564, 1565, 1566, 1567, 1739, 1740, 5432, 5433, 5434, 5435, 5436, 5437, 5438, 7055,7527, 9511, 9623, 15514, 15516, 23848, 23849, 23820, 23851, 23905),
 	WOODEN_FENCE_GATES(Material.WOOD_GRAIN,new Properties().setFlatNormals(true), 2050, 2051),
 
 	// Wooden Railing
