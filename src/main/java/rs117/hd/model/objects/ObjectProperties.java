@@ -37,12 +37,14 @@ public enum ObjectProperties
 	NONE(Material.NONE, -1),
 
 	// Trees
-	TREES(Material.BARK, 1276, 1278, 1293, 1294, 1295, 2092, 9661, 10819, 10820, 10823, 10832, 10833, 10834, 37329),
+	TREES(Material.BARK, 1276, 1278, 1282, 1286, 1293, 1294, 1295, 1383, 2092, 9661, 10819, 10820, 10823, 10832, 10833, 10834, 37329),
+	BUSH_DEAD(Material.BARK, 1122, 5536, 13840),
 	STICKS(Material.BARK, new Properties().setUvType(UvType.GROUND_PLANE), 1246, 1247),
-	SWAMP_TREE_DEAD(Material.BARK, 3508, 3510, 3515,3519, 4048, 4049, 4050, 4052, 4054),
+	SWAMP_TREE_DEAD(Material.BARK, 1365, 3508, 3510, 3515,3519, 4048, 4049, 4050, 4052, 4054),
 	TREE_DEAD(Material.BARK, 1282, 1283, 1284, 1286),
 	TREE_FALLEN(Material.BARK, 1322),
 	SWAMP_TREE_FALLEN(Material.BARK,3512, 3514),
+	SWAMP_TREE(Material.BARK,1369),
 	SWAMP_ROOT(Material.BARK, 1363, 1364, 1366, 1367, 1368),
 	BARROWS_TREE_DEAD(Material.BARK, 4051, 4053),
 
@@ -65,6 +67,9 @@ public enum ObjectProperties
 	WOODEN_BRIDGE(Material.WOOD_GRAIN, new Properties().setFlatNormals(true), 5239),
 	LOG_STAIRS(Material.WOOD_GRAIN, new Properties().setFlatNormals(true), 42349),
 
+	// Wakka Canoe
+	//WAKKA_CANOE_DOCK(Material.BARK, 12163), // Does not work; animated items cannot be textured
+
 	// Furniture - Probably will need custom UVs per object.
 	WOODEN_FURNITURE(Material.WOOD_GRAIN,new Properties().setFlatNormals(true).setUvType(UvType.GROUND_PLANE), 593, 598, 1088, 1102, 1106, 1902),
 	BOOKCASE(Material.BOOKCASE, new Properties().setUvType(UvType.GROUND_PLANE), 380),
@@ -78,6 +83,15 @@ public enum ObjectProperties
 	// Mason
 	GRAVESTONES_MORYTANIA(Material.ROCK_1, 5167, 5168), // Probably elsewhere, feel free to rename and expand
 	MARBLE_STATUES(Material.MARBLE, 563, 574, 575, 576, 3479, 3699, 3700, 5791, 24037),
+
+
+	ORE_TIN(Material.DIRT_SHINY_2, 11360, 11361),
+	ORE_COPPER(Material.DIRT_SHINY_2, 10943, 11161),
+	//ORE_IRON(),
+	ORE_COAL(Material.DIRT_SHINY_2, 11366, 11367),
+	//ORE_GOLD(),
+	ORE_MITHRIL(Material.DIRT_SHINY_2, 11372, 11373),
+	ORE_ADAMENTITE(Material.DIRT_SHINY_2, 11374, 11375),
 
 	// Lumbridge
 	LUMBRIDGE_CASTLE_WALLS(Material.NONE, new Properties().setFlatNormals(true), 1651, 1911, 1912, 1913),
