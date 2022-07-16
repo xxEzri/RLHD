@@ -58,7 +58,7 @@ public enum ObjectProperties
 	FERN(Material.NONE, new Properties().setInheritTileColor(true), 19827, 19833, 19839),
 
 	// Wooden Fences
-	WOODEN_FENCES(Material.WOOD_GRAIN,new Properties().setFlatNormals(true),  446, 814, 980, 981, 991, 992,993, 1007, 1008, 1558, 1559, 1560, 1561, 1562, 1563, 1564, 1565, 1566, 1567, 1739, 1740, 5432, 5433, 5434, 5435, 5436, 5437, 5438, 7055,7527, 9511, 9623, 15514, 15516, 23848, 23849, 23820, 23851, 23905),
+	WOODEN_FENCES(Material.WOOD_GRAIN,new Properties().setFlatNormals(true),  446, 814, 980, 981, 991, 992, 993, 1007, 1008, 1558, 1559, 1560, 1561, 1562, 1563, 1564, 1565, 1566, 1567, 1739, 1740, 5432, 5433, 5434, 5435, 5436, 5437, 5438, 7055,7527, 9511, 9623, 9589, 12430, 12431, 15514, 15516, 23848, 23849, 23820, 23851, 23905),
 	WOODEN_FENCE_GATES(Material.WOOD_GRAIN,new Properties().setFlatNormals(true), 2050, 2051),
 
 	// Wooden Railing
@@ -71,7 +71,7 @@ public enum ObjectProperties
 	// Furniture - Probably will need custom UVs per object.
 	WOODEN_FURNITURE(Material.WOOD_GRAIN,new Properties().setFlatNormals(true).setUvType(UvType.GROUND_PLANE), 593, 598, 616, 1088, 1102, 1106, 1902, 5615, 9531, 9613, 9614, 9615, 9616, 9617, 9621, 11490, 12543, 12544),
 	BOOKCASE(Material.BOOKCASE, new Properties().setUvType(UvType.GROUND_PLANE), 380),
-	WOODEN_LADDER(Material.WOOD_GRAIN, 9558),
+	WOODEN_LADDER(Material.WOOD_GRAIN, 9558, 16450),
 	WOODEN_STAIRS(Material.WOOD_GRAIN, 18991),
 
 	// Wooden House
@@ -132,6 +132,9 @@ public enum ObjectProperties
 	PORT_SARIM_DOCK(Material.GRUNGE_2, 9413, 9541, 9542),
 	PORT_SARIM_DOCK_RAILS(Material.WOOD_GRAIN, 9539),
 
+	// Goblin Village
+	GOBLIN_VILLAGE_LOGS(Material.BARK, 12275, 23332, 23333, 23334, 23335, 23336, 23337),
+	GOBLIN_VILLAGE_WOOD(Material.WOOD_GRAIN,12416, 12429, 12436, 12437, 12439, 12341, 23320, 23321),
 	// Al Kharid
 	AL_KHARID_WALLS(Material.NONE, new Properties().setFlatNormals(true), 1415, 1416, 21799, 33348),
 	// Citharede Abbey
@@ -220,7 +223,7 @@ public enum ObjectProperties
 	GAME_OBJECT_DIRT_ROCK(Material.DIRT_2, new Properties().setInheritTileColor(true), 9662, 9669, 9670, 9671),
 
 	// Cave Walls
-	ROCK_CAVE_ENTRANCES(Material.ROCK_2, new Properties().setFlatNormals(true), 3735, 6659, 11835, 29627),
+	ROCK_CAVE_ENTRANCES(Material.ROCK_2, new Properties().setFlatNormals(true), 3735, 6659, 11835, 29627, 40887),
 	CAVE_WALLS_BLEND(Material.ROCK_2, new Properties().setFlatNormals(true).setUvType(UvType.GROUND_PLANE), 17211, 17210, 17215, 17216, 17217,25049,25050, 25051, 25052,25053,25054,25055,25056,25052, 25059,25060, 25061,25062, 25063,25064,29634),
 	CAVE_WALL_OPENINGS(Material.GRUNGE_1, new Properties().setFlatNormals(true),5046, 12770, 43759),
 	CAVE_WALL_ABOVE_FLOOR_TILE(Material.ROCK_2, new Properties().setFlatNormals(true).setUvType(UvType.GROUND_PLANE), 17224, 25057, 25058,1459,6628,176, 177,178),
