@@ -350,6 +350,11 @@ public enum Area
 	EAST_ARDOUGNE_CASTLE_PATH_FIX(
 		new Rect(2585, 3298, 2593, 3314)
 	),
+	EAST_ARDOUGNE_BANK(
+		new Rect(2658, 3287, 2652,3280, 0),
+		new Rect(2651, 3287, 2649, 3285,0),
+		new Rect(2651, 3282, 2649, 3280,0)
+	),
 
 	// Yanille
 	YANILLE_BANK(2609, 3088, 2616, 3097),

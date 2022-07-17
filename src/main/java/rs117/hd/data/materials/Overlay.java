@@ -159,6 +159,7 @@ public enum Overlay
 	EAST_ARDOUGNE_CASTLE_DIRT_FIX(14, Area.EAST_ARDOUGNE_CASTLE_DIRT_FIX, GroundMaterial.DIRT, new Properties().setShiftLightness(7).setBlended(false)),
 	EAST_ARDOUGNE_CASTLE_PATH_FIX(10, Area.EAST_ARDOUGNE_CASTLE_PATH_FIX, GroundMaterial.VARROCK_PATHS_LIGHT, new Properties().setShiftLightness(16).setBlended(false)),
 	EAST_ARDOUGNE_PATHS_1(10, Area.EAST_ARDOUGNE, GroundMaterial.VARROCK_PATHS_LIGHT, new Properties().setShiftLightness(6)),
+	EAST_ARDOUNGE_BANK_FLOOR(10, Area.EAST_ARDOUGNE_BANK, GroundMaterial.CONCRETE),
 	WIZARD_HOUSE_TILE_LIGHT(38, Area.EAST_ARDOUGNE, GroundMaterial.MARBLE_1_SEMIGLOSS, new Properties().setBlended(false)),
 	WIZARD_HOUSE_TILE_DARK(40, Area.EAST_ARDOUGNE, GroundMaterial.MARBLE_2_SEMIGLOSS, new Properties().setBlended(false)),
 
