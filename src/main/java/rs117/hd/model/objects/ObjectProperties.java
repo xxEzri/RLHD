@@ -165,7 +165,7 @@ public enum ObjectProperties
 
 	SEERS_FENCE_WHITE(Material.WOOD_GRAIN, 25760),
 	// Stone walls
-	STONE_WALL(Material.GRUNGE_1, new Properties().setFlatNormals(true), 979 , 5566, 5567, 5568, 5569, 5570, 26134),
+	STONE_WALL(Material.GRUNGE_1, new Properties().setFlatNormals(true), 979 , 5566, 5567, 5568, 5569, 5570, 26134, 26135, 23136),
 
 	// Temple of Ikov
 	STATUE_OF_A_WARRIOR_1(Material.MARBLE_2_GLOSS, 562, 566),
