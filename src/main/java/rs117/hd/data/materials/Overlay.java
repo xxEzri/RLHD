@@ -169,7 +169,10 @@ public enum Overlay
 	GUTANOTH_CAVE(29, Area.GUTANOTH_CAVE, WaterType.SWAMP_WATER_FLAT),
 
 	// Draynor
+	DRAYNOR_AGGIES_HOUSE(-93, Area.DRAYNOR_AGGIES_HOUSE, GroundMaterial.CARPET, new Properties().setBlended(false)),
 	WISE_OLD_MANS_HOUSE_CARPET(86, Area.DRAYNOR, GroundMaterial.CARPET, new Properties().setBlended(false)),
+	DRAYNOR_BANK_FLOOR(10, Area.DRAYNOR_BANK, GroundMaterial.STONE_PATTERN, new Properties().setBlended(false)),
+
 	// Draynor manor
 	DRAYNOR_MANOR_TILE_DARK(2, Area.DRAYNOR_MANOR_INTERIOR, GroundMaterial.MARBLE_1, new Properties().setBlended(false)),
 	DRAYNOR_MANOR_TILE_LIGHT(10, Area.DRAYNOR_MANOR_INTERIOR, GroundMaterial.MARBLE_2, new Properties().setBlended(false)),

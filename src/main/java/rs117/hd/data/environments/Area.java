@@ -147,6 +147,15 @@ public enum Area
 	DRAYNOR_MANOR_BASEMENT(
 		new Rect(3073, 9780, 3082, 9766)
 	),
+	DRAYNOR_AGGIES_HOUSE(3088, 3261, 3083, 3256),
+	DRAYNOR_BANK(
+		new Rect(3097, 3246, 3088, 3240)
+	),
+	// For correcting path placement around town
+	DRAYNOR_PATH_ADJUSTMENTS(
+		new Rect(3093, 3247, 3092, 3247),
+		new Rect(3088, 3250,3088, 3250)
+	),
 	DRAYNOR(
 		new Rect(3071, 3226, 3133, 3292),
 		new Rect(2112, 4893, 2166, 4930) // bank robbery cutscene
