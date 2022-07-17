@@ -163,6 +163,10 @@ public enum Area
 		new Rect(2946, 3376, 2949, 3382)
 	),
 	FALADOR_PARTY_ROOM(3034, 3387, 3057, 3369),
+	FALADOOR_PARTY_ROOM_STAIRS_FIX(
+		new Rect(3054, 3084, 3053, 3383),
+		new Rect(3038, 3084, 3037, 3383)
+	),
 	FALADOR(
 		new Rect(2932, 3306, 3068, 3401),
 		new Rect(3456, 4734, 3528, 4783)
