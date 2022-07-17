@@ -185,7 +185,6 @@ public enum ObjectProperties
 	// Castle Wars
 	CASTLE_WARS_WALLS(Material.NONE, new Properties().setFlatNormals(true), 1620, 1622, 1631, 4409, 4410, 4445, 4446, 4447, 4908),
 	CASTLE_WARS_UNDERGROUND_WALLS(Material.GRUNGE_1, 1417, 1434, 1435, 4448, 27122), // Is also other underground walls
-	CASTLE_WARS_UNDERGROUND_ROCKS(Material.GRUNGE_1, 314, 315, 316, 317, 318, 319, 320, 321),
 	CASTLE_WARS_DECORATION(Material.NONE, new Properties().setFlatNormals(true), 4435, 4436),
 
 	// Morytania
@@ -218,6 +217,7 @@ public enum ObjectProperties
 	SANDSTONE_LIKE_OBJECT(Material.ROCK_2,728, 729, 730, 3204, 3614, 3615),
 	DIRT_LIKE_OBJECT(Material.DIRT_2,  new Properties().setInheritTileColor(true),314, 315, 316, 319, 320, 321, 324, 325, 326, 340, 3949, 4339, 4340, 4341, 4342, 4343, 4344, 7105, 7106, 7120, 7121, 7122, 7123, 7124, 7125, 7126, 9763, 6973, 9674),
 	WHITE_ROCK(Material.ROCK_2, 11436, 11437),
+	GROUND_OBJECT_SNOW(Material.SNOW_1, 559, 560, 561),
 
 	WILDERNESS_DITCH(Material.DIRT_1, new Properties().setFlatNormals(true), 23261, 23262 ,23263, 23264, 23265, 23266, 23267, 23268, 23272, 23273),
 
