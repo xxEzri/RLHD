@@ -358,6 +358,7 @@ public enum Area
 
 	// Yanille
 	YANILLE_BANK(2609, 3088, 2616, 3097),
+	YANILLE_WATCHTOWER_TOP(2934, 4718, 2927, 4711, 2),
 	YANILLE(
 		new Rect(2531, 3127, 2622, 3070),
 		new Rect(2880, 4671, 2944, 4735) // instance
