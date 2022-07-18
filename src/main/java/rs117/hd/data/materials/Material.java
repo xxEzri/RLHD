@@ -231,7 +231,10 @@ public enum Material
 	HD_MAGMA_2(244, new Properties().setEmissive(1.0f).setDisplacement(235, 0.04f, 36f, 12f)),
 
 	BARK(245),
+	BAMBOO(264),
 	WOOD_GRAIN(247),
+	WOOD_ROUGH(263),
+	VINES(265),
 
 	HD_INFERNAL_CAPE(248, new Properties().setEmissive(1).setDisplacement(235, 0.02f, 12f, 4f).setScroll(0f, 3f)),
 
