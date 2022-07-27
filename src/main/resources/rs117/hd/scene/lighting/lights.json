@@ -30021,5 +30021,43 @@
     "duration": 7000,
     "range": 10,
     "fadeInDuration": 0
+  },
+  {
+    "description": "LUMBRIDGE_CHURCH_WINDOW_SUNLIGHT_1",
+    "worldX": 3244,
+    "worldY": 3204,
+    "plane": 0,
+    "height": 350,
+    "alignment": "CENTER",
+    "radius": 1050,
+    "strength": 3,
+    "color": [
+      255,
+      242,
+      163
+    ],
+    "type": "PULSE",
+    "duration": 5000,
+    "range": 3,
+    "fadeInDuration": 0
+  },
+  {
+    "description": "LUMBRIDGE_CHURCH_WINDOW_SUNLIGHT_2",
+    "worldX": 3243,
+    "worldY": 3204,
+    "plane": 0,
+    "height": 350,
+    "alignment": "CENTER",
+    "radius": 1050,
+    "strength": 3,
+    "color": [
+      255,
+      242,
+      163
+    ],
+    "type": "PULSE",
+    "duration": 5000,
+    "range": 3,
+    "fadeInDuration": 0
   }
 ]
