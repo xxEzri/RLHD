@@ -52,11 +52,21 @@ public enum Overlay
 	LUMBRIDGE_CASTLE_FLOORS(10, Area.LUMBRIDGE_CASTLE, GroundMaterial.VARROCK_PATHS_LIGHT, new Properties().setShiftLightness(10)),
 	BLEND_IMPROVEMENT_1(10, Area.LUMBRIDGE_DRAYNOR_PATH_BLEND_1, GroundMaterial.GRAVEL, new Properties().setShiftLightness(6).setHue(7).setSaturation(1)),
 	BLEND_IMPROVEMENT_2(10, Area.LUMBRIDGE_DRAYNOR_PATH_BLEND_2, GroundMaterial.GRAVEL, new Properties().setShiftLightness(9).setHue(7).setSaturation(1)),
+	SWAMP_PATH_FIX_1(81, Area.LUMBRIDGE_SWAMP_PATH_FIX, GroundMaterial.DIRT, new Properties().setSaturation(4).setShiftLightness(-3)),
+	SWAMP_PATH_FIX_2(83, Area.LUMBRIDGE_SWAMP_PATH_FIX, GroundMaterial.DIRT, new Properties().setSaturation(4).setShiftLightness(-5)),
+	SWAMP_PATH_FIX_3(88, Area.LUMBRIDGE_SWAMP_PATH_FIX, GroundMaterial.GRAVEL, new Properties().setShiftLightness(12).setHue(7).setSaturation(1)),
+	LUMBRIDGE_VARROCK_PATH_FIX_1(3, Area.LUMBRIDGE_VARROCK_PATH_FIX, GroundMaterial.GRAVEL, new Properties().setShiftLightness(12).setHue(7).setSaturation(1)),
+	LUMBRIDGE_VARROCK_PATH_FIX_2(8, Area.LUMBRIDGE_VARROCK_PATH_FIX, GroundMaterial.GRAVEL, new Properties().setShiftLightness(12).setHue(7).setSaturation(1)),
 	LUMBRIDGE_PATHS(10, Area.LUMBRIDGE, GroundMaterial.GRAVEL, new Properties().setShiftLightness(12).setHue(7).setSaturation(1)),
 	LUMBRIDGE_CASTLE_ENTRYWAY_1(2, Area.LUMBRIDGE_CASTLE_ENTRYWAY, GroundMaterial.MARBLE_1_GLOSS, new Properties().setBlended(false)),
 	LUMBRIDGE_CASTLE_ENTRYWAY_2(3, Area.LUMBRIDGE_CASTLE_ENTRYWAY, GroundMaterial.MARBLE_2_GLOSS, new Properties().setBlended(false)),
 
 	// Varrock
+	VARROCK_MUSEUM_SOUTH_PATH_FIX_1(-85, Area.VARROCK_MUSEUM_SOUTH_PATH_FIX, GroundMaterial.DIRT, new Properties().setShiftSaturation(2)),
+	VARROCK_MUSEUM_SOUTH_PATH_FIX_2(-84, Area.VARROCK_MUSEUM_SOUTH_PATH_FIX, GroundMaterial.DIRT, new Properties().setShiftSaturation(1)),
+	VARROCK_MUSEUM_SOUTH_PATH_FIX_3(56, Area.VARROCK_MUSEUM_SOUTH_PATH_FIX, GroundMaterial.VARROCK_PATHS, new Properties().setShiftLightness(4)),
+	VARROCK_WEST_BANK_SOUTH_PATH_FIX_1(-84, Area.VARROCK_WEST_BANK_SOUTH_PATH_FIX, GroundMaterial.VARROCK_PATHS, new Properties().setShiftLightness(4).setShiftSaturation(-1)),
+	VARROCK_WILDERNESS_DITCH_PATH_FIX_1(-84, Area.VARROCK_WILDERNESS_DITCH_PATH_FIX, GroundMaterial.DIRT, new Properties().setShiftSaturation(1)),
 	VARROCK_MUSEUM_FLOOR(56, Area.VARROCK_MUSEUM, GroundMaterial.TILES_2x2_2_GLOSS, new Properties().setBlended(false)),
 	VARROCK_MUSEUM_BASEMENT_FLOOR(56, Area.VARROCK_MUSEUM_BASEMENT, GroundMaterial.TILES_2x2_2_GLOSS, new Properties().setBlended(false)),
 	VARROCK_JULIETS_FLOWER_BED(81, Area.VARROCK_JULIETS_HOUSE_FLOWER_BED, GroundMaterial.DIRT, new Properties().setBlended(true)),
@@ -74,6 +84,12 @@ public enum Overlay
 	VARROCK_ROOF_GRAVEL(2, Area.VARROCK_CASTLE, GroundMaterial.GRAVEL, new Properties().setBlended(false)),
 	VARROCK_ROOF_ARCHERY_FLOOR_1(-83, Area.VARROCK_CASTLE, GroundMaterial.DIRT, new Properties().setBlended(false)),
 	VARROCK_ROOF_ARCHERY_FLOOR_2(-84, Area.VARROCK_CASTLE, GroundMaterial.DIRT, new Properties().setBlended(false)),
+	VARROCK_DIRT_BLENDING_IMPROVEMENT(-84, Area.VARROCK, GroundMaterial.DIRT, new Properties().setShiftSaturation(1)),
+	// this tile is used by jagex to blend between dirt paths and regular paths; blending desaturates the dirt and looks bad, extra saturation cancels out the effect
+
+	// Barbarian Village
+	BARBARIAN_VILLAGE_EAST_PATH_FIX_1(83, Area.BARBARIAN_VILLAGE_EAST_PATH_FIX, GroundMaterial.DIRT, new Properties().setShiftSaturation(+2)),
+	BARBARIAN_VILLAGE_EAST_PATH_FIX_2(2, Area.BARBARIAN_VILLAGE_EAST_PATH_FIX, GroundMaterial.GRAVEL, new Properties().setShiftSaturation(-1).setShiftLightness(+4)),
 
 	// Digsite
 	DIGSITE_DOCK(93, Area.DIGSITE_DOCK, GroundMaterial.TILES_2x2_1_GLOSS, new Properties().setBlended(false)),
@@ -91,6 +107,11 @@ public enum Overlay
 	// Falador
 	FALADOR_EAST_BANK_PATH_FIX_2(-119, Area.FALADOR_EAST_BANK_PATH_FIX_2, GroundMaterial.FALADOR_PATHS, new Properties().setHue(7).setSaturation(1).setShiftLightness(13).setBlended(false)),
 	FALADOR_EAST_BANK_PATH_FIX_1(-119, Area.FALADOR_EAST_BANK_PATH_FIX_1, GroundMaterial.FALADOR_PATHS, new Properties().setHue(7).setSaturation(1).setShiftLightness(9).setBlended(false)),
+	FALADOR_TRIANGLE_DIRT_PATH_FIX_1(2, Area.FALADOR_TRIANGLE_PATH_FIX_1, GroundMaterial.GRAVEL, new Properties().setShiftLightness(3)),
+	FALADOR_TRIANGLE_DIRT_PATH_FIX_2(83, Area.FALADOR_TRIANGLE_PATH_FIX_1, GroundMaterial.GRAVEL, new Properties().setShiftLightness(5).setShiftSaturation(-1).setShiftHue(-4)),
+	FALADOR_TRIANGLE_PATH_PATH_FIX_1(119, Area.FALADOR_TRIANGLE_PATH_FIX_2, GroundMaterial.GRAVEL, new Properties().setShiftLightness(2).setShiftSaturation(-1).setShiftHue(-4)),
+	FALADOR_SOUTH_PATH_FIX_1(119, Area.FALADOR_SOUTH_PATH_FIX, GroundMaterial.FALADOR_PATHS, new Properties().setHue(7).setSaturation(1).setShiftLightness(7)),
+	FALADOR_SOUTH_PATH_FIX_2(88, Area.FALADOR_SOUTH_PATH_FIX, GroundMaterial.GRAVEL, new Properties().setShiftLightness(2).setShiftSaturation(-1).setShiftHue(-4)),
 	FALADOR_PATHS(-119, Area.FALADOR, GroundMaterial.FALADOR_PATHS, new Properties().setHue(7).setSaturation(1).setShiftLightness(7)),
 	FALADOR_HAIRDRESSER_TILE_1(77, Area.FALADOR_HAIRDRESSER, GroundMaterial.MARBLE_1_GLOSS, new Properties().setBlended(false)),
 	FALADOR_HAIRDRESSER_TILE_2(123, Area.FALADOR_HAIRDRESSER, GroundMaterial.MARBLE_2_GLOSS, new Properties().setBlended(false)),
