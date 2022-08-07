@@ -211,7 +211,7 @@ void main() {
         waterSpecularStrength = 0.5;
         waterSpecularGloss = 500;
         waterNormalStrength = 0.09;
-        waterBaseOpacity = 0.5;
+        waterBaseOpacity = 0.4;
         waterFresnelAmount = 1.0;
         waterSurfaceColor = vec3(1, 1, 1);
         waterFoamColor = vec3(176, 164, 146);
@@ -717,19 +717,21 @@ void main() {
     // fresnel reflection
     float baseOpacity = 0.4;
     float fresnel = 1.0 - clamp(viewDotNormals, 0.0, 1.0);
-    float finalFresnel = clamp(mix(baseOpacity, 1.0, fresnel * 1.2), 0.0, 1.0);
+    float finalFresnel = clamp(mix(baseOpacity, 0.8, fresnel), 0.0, 0.8);
     vec3 surfaceColor = vec3(0);
     if (isWater)
     {
-        // add sky gradient
-        if (finalFresnel < 0.5)
-        {
-            surfaceColor = mix(waterColorDark, waterColorMid, finalFresnel * 2);
-        }
-        else
-        {
-            surfaceColor = mix(waterColorMid, waterColorLight, (finalFresnel - 0.5) * 2);
-        }
+        // add sky gradient later with actual sky color - planar reflection if possible, faked if not
+        //if (finalFresnel < 0.5)
+        //{
+            ////surfaceColor = mix(waterColorDark, waterColorLight, finalFresnel);
+            //surfaceColor = waterColorMid;
+            surfaceColor = waterColorMid;
+        //}
+        //else
+       // {
+            //surfaceColor = mix(waterColorMid, waterColorLight, (finalFresnel - 0.5) * 2);
+        //}
     }
     vec3 surfaceColorOut = surfaceColor * max(combinedSpecularStrength, 0.2);
 

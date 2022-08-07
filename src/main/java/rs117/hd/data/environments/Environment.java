@@ -1075,7 +1075,8 @@ public enum Environment
 		private boolean underwater = false;
 		private float[] underwaterCausticsColor = null;
 		private float underwaterCausticsStrength = 0;
-		private float[] waterColor = rgb(185, 214, 255); // Regular overworld water, failsafe
+		//private float[] waterColor = rgb(185, 214, 255); // Regular overworld water, failsafe
+		private float[] waterColor = rgb(130, 150, 178); // testing
 
 		public Properties setFogDepth(int depth)
 		{

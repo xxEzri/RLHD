@@ -1806,7 +1806,7 @@ public class HdPlugin extends Plugin implements DrawCallbacks
 			float[] waterColor = environmentManager.currentWaterColor;
 			float[] waterColorHSB = Color.RGBtoHSB((int) (waterColor[0] * 255f), (int) (waterColor[1] * 255f), (int) (waterColor[2] * 255f), null);
 			float lightBrightnessMultiplier = 0.8f;
-			float midBrightnessMultiplier = 0.45f;
+			float midBrightnessMultiplier = 0.8f;
 			float darkBrightnessMultiplier = 0.05f;
 			float[] waterColorLight = new Color(Color.HSBtoRGB(waterColorHSB[0], waterColorHSB[1], waterColorHSB[2] * lightBrightnessMultiplier)).getRGBColorComponents(null);
 			float[] waterColorMid = new Color(Color.HSBtoRGB(waterColorHSB[0], waterColorHSB[1], waterColorHSB[2] * midBrightnessMultiplier)).getRGBColorComponents(null);
